@@ -1,0 +1,29 @@
+{
+  "name": "pern-todo",
+  "version": "1.0.0",
+  "description": "React + Postgres + Express + Node",
+  "main": "index.js",
+  "dependencies": {
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "npx prettier --write .",
+    "format-check": "npx prettier --check",
+    "lint": "npx eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdabbagh/pern-todo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdabbagh/pern-todo/issues"
+  },
+  "homepage": "https://github.com/mdabbagh/pern-todo#readme"
+}
