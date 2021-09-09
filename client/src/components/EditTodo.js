@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { FormControl, TextField, Container, Button } from "@material-ui/core";
+import { TextField, Button, Grid } from "@material-ui/core";
 import axios from "axios";
 import PropTypes from "prop-types";
 
@@ -23,9 +23,11 @@ const EditTodo = ({ todo, handleClose }) => {
 
   return (
     <Fragment>
-      <Container>
-        <h2>Edit Todo</h2>
-        <FormControl>
+      <Grid container spacing={0}>
+        <Grid item xs={12}>
+          <h2>Edit Todo</h2>
+        </Grid>
+        <Grid item xs={12} md={12}>
           <TextField
             required
             id="description"
@@ -33,21 +35,32 @@ const EditTodo = ({ todo, handleClose }) => {
             label="Enter description"
             variant="outlined"
             autoComplete="off"
+            fullWidth
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+        </Grid>
+        <Grid item xs={12} md={6}>
           <Button
             variant="contained"
             color="primary"
+            fullWidth
             onClick={(e) => updateDescription(e)}
           >
             Save
           </Button>
-          <Button variant="contained" color="secondary" onClick={handleClose}>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Button
+            variant="contained"
+            color="secondary"
+            fullWidth
+            onClick={handleClose}
+          >
             Close
           </Button>
-        </FormControl>
-      </Container>
+        </Grid>
+      </Grid>
     </Fragment>
   );
 };
