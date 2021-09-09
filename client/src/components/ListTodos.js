@@ -108,7 +108,7 @@ const ListTodos = () => {
                     color="primary"
                     onClick={handleOpen(todo.todo_id)}
                   >
-                    Open Modal
+                    Edit Todo
                   </Button>
                 </TableCell>
                 <TableCell component="th" scope="row">
