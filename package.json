@@ -4,6 +4,7 @@
   "description": "React + Postgres + Express + Node",
   "main": "index.js",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "prettier": "^2.3.2"
   },
   "devDependencies": {
