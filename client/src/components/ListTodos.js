@@ -10,10 +10,11 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
 import axios from "axios";
+import env from "react-dotenv";
 
 import EditTodo from "./EditTodo";
 
-const baseUrl = "http://localhost:5000/todos";
+const baseUrl = `${env.API_URL}/todos`;
 
 function getModalStyle() {
   return {
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ListTodos = () => {
-  const api = axios.create({ baseUrl, proxy: false });
+  const api = axios.create({ baseUrl });
 
   const classes = useStyles();
   const [todos, setTodos] = useState([]);

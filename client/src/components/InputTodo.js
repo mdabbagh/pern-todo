@@ -1,11 +1,13 @@
 import React, { Fragment, useState } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
 import axios from "axios";
+import env from "react-dotenv";
+
+const baseUrl = `${env.API_URL}/todos`;
 
 const InputTodo = () => {
   const [description, setDescription] = useState("");
-  const baseUrl = "http://localhost:5000/todos";
-  const api = axios.create({ baseUrl, proxy: false });
+  const api = axios.create({ baseUrl });
 
   const onSubmitForm = async (e) => {
     e.preventDefault();

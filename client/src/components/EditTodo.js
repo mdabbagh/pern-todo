@@ -2,10 +2,12 @@ import React, { Fragment, useState } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
 import axios from "axios";
 import PropTypes from "prop-types";
+import env from "react-dotenv";
+
+const baseUrl = `${env.API_URL}/todos`;
 
 const EditTodo = ({ todo, handleClose }) => {
   const [description, setDescription] = useState(todo.description);
-  const baseUrl = "http://localhost:5000/todos";
   const api = axios.create({ baseUrl, proxy: false });
 
   const updateDescription = async (e) => {
