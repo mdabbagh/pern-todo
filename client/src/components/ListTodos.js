@@ -13,6 +13,7 @@ import axios from "axios";
 import env from "react-dotenv";
 
 import EditTodo from "./EditTodo";
+import InputTodo from "./InputTodo";
 
 const baseUrl = `${env.API_URL}/todos`;
 
@@ -80,6 +81,7 @@ const ListTodos = () => {
 
   return (
     <Fragment>
+      <InputTodo />
       <TableContainer component={Paper} className={classes.tableContainer}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>

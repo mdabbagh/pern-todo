@@ -8,7 +8,7 @@ const baseUrl = `${env.API_URL}/todos`;
 
 const EditTodo = ({ todo, handleClose }) => {
   const [description, setDescription] = useState(todo.description);
-  const api = axios.create({ baseUrl, proxy: false });
+  const api = axios.create({ baseUrl });
 
   const updateDescription = async (e) => {
     e.preventDefault();

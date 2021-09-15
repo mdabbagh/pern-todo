@@ -1,6 +1,6 @@
 # pern-todo
 
-React + Postgres + Express + Node
+Postgres + Express + React + Node
 
 ## 1-Time Setup
 
@@ -12,4 +12,28 @@ React + Postgres + Express + Node
 
 ```bash
 npm install
+```
+
+## Running the app
+
+Install nodemon globally:
+
+```bash
+npm install nodemon -g
+```
+
+Run the server:
+
+```bash
+cd server
+nodemon index.js
+```
+
+The server is now running on localhost:5000.
+
+Run the client:
+
+```bash
+cd client
+npm start
 ```

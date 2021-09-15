@@ -1,10 +1,12 @@
-import React, { Fragment } from "react";
+import React from "react";
 import "./App.css";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import InputTodo from "./components/InputTodo";
 import ListTodos from "./components/ListTodos";
+import Register from "./components/Register";
+import Login from "./components/Login";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,18 +24,29 @@ function App() {
   const classes = useStyles();
 
   return (
-    <Fragment>
+    <Router>
       <div className={classes.root}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <InputTodo />
-          </Grid>
-          <Grid item xs={12}>
-            <ListTodos />
-          </Grid>
+          <Switch>
+            <Route path="/register">
+              <Grid item xs={12}>
+                <Register />
+              </Grid>
+            </Route>
+            <Route path="/login">
+              <Grid item xs={12}>
+                <Login />
+              </Grid>
+            </Route>
+            <Route path="/">
+              <Grid item xs={12}>
+                <ListTodos />
+              </Grid>
+            </Route>
+          </Switch>
         </Grid>
       </div>
-    </Fragment>
+    </Router>
   );
 }
 
