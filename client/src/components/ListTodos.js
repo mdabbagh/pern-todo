@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useContext } from "react";
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -11,6 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
 import axios from "axios";
 import env from "react-dotenv";
+import { UserContext } from "../UserContext";
 
 import EditTodo from "./EditTodo";
 import InputTodo from "./InputTodo";
@@ -48,6 +49,9 @@ const ListTodos = () => {
   const [todos, setTodos] = useState([]);
   const [modalStyle] = useState(getModalStyle);
   const [modalState, setModalState] = useState({ open: false, todoId: null });
+
+  const { user } = useContext(UserContext);
+  console.log("THE USER IS" + user);
 
   const handleOpen = (todoId) => () => {
     setModalState({ open: true, todoId: todoId });

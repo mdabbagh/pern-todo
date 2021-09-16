@@ -1,28 +1,36 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import axios from "axios";
 import env from "react-dotenv";
+import { UserContext } from "../UserContext";
+import { useHistory } from "react-router-dom";
 
 const baseUrl = `${env.API_URL}/users/login`;
 
 const Login = () => {
+  const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
+
+  const { setUser } = useContext(UserContext);
 
   const api = axios.create({ baseUrl });
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
-      console.log("In submit form");
       const body = { email, password };
 
-      await api.post(baseUrl, {
+      const response = await api.post(baseUrl, {
         email: body.email,
         password: body.password,
       });
-      window.location = "/";
+      localStorage.setItem("token", response.data.token);
+      console.log(response.data.user);
+      setUser(response.data.user.user_id);
+      console.log("ABOUT TO REDIRECT TO TODOS");
+      history.push("/");
     } catch (err) {
       console.log(err);
       setErrors(errors.push("Something went wrong. Please try again."));
@@ -39,7 +47,7 @@ const Login = () => {
             }
         )}
       <Grid container spacing={2}>
-        <Grid item xs={12} justifyContent="center">
+        <Grid item xs={12}>
           <h1>Login</h1>
         </Grid>
         <Grid item xs={2}>

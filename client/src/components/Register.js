@@ -1,7 +1,9 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import axios from "axios";
 import env from "react-dotenv";
+import { UserContext } from "../UserContext";
+import { useHistory } from "react-router-dom";
 
 const baseUrl = `${env.API_URL}/users/register`;
 
@@ -12,28 +14,29 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState([]);
+  const history = useHistory();
+
+  const { setUser } = useContext(UserContext);
 
   const api = axios.create({ baseUrl });
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
-      console.log("In submit form");
       const body = { firstname, lastname, email, password, confirmPassword };
-      if (password != confirmPassword) {
-        console.log("In if");
-        setErrors(errors.push("Password and confirm password should match."));
-        console.log(errors[0]);
-        window.location = "/register";
-      } else {
-        await api.post(baseUrl, {
-          firstname: body.firstname,
-          lastname: body.lastname,
-          email: body.email,
-          password: body.password,
-        });
-        window.location = "/";
-      }
+
+      // Post to register, objects in response: user, token, success, and expiresIn
+      const response = await api.post(baseUrl, {
+        firstname: body.firstname,
+        lastname: body.lastname,
+        email: body.email,
+        password: body.password,
+      });
+      // Set localStorage token to use in axios interceptor
+      localStorage.setItem("token", response.data.token);
+      setUser(response.data.user.user_id);
+      // Redirect to home page
+      history.push("/");
     } catch (err) {
       console.log(err);
       setErrors(errors.push("Something went wrong. Please try again."));
@@ -50,7 +53,7 @@ const Register = () => {
             }
         )}
       <Grid container spacing={2}>
-        <Grid item xs={12} justifyContent="center">
+        <Grid item xs={12}>
           <h1>Add Todo</h1>
         </Grid>
         <Grid item xs={2}>

@@ -16,7 +16,7 @@ const InputTodo = () => {
       await api.post(baseUrl, {
         description: body.description,
       });
-      window.location = "/";
+      window.location = "/todos";
     } catch (err) {
       console.log(err);
     }
@@ -25,7 +25,7 @@ const InputTodo = () => {
   return (
     <Fragment>
       <Grid container justifyContent="center" spacing={1}>
-        <Grid item xs={12} justifyContent="center">
+        <Grid item xs={12}>
           <h1>Add Todo</h1>
         </Grid>
         <Grid item xs={12} md={9}>

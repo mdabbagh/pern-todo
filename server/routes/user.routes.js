@@ -21,8 +21,11 @@ router.post("/login", async function (req, res, next) {
 
     if (isValid) {
       const tokenObject = await utils.issueJWT(user.rows[0]);
+      // Remove password field before returning user object
+      delete user.rows[0]["password"];
 
       res.status(200).json({
+        user: user.rows[0],
         success: true,
         token: tokenObject.token,
         expiresIn: tokenObject.expires,
@@ -56,7 +59,14 @@ router.post("/register", async function (req, res) {
         [firstname, lastname, email, hashedPassword]
       );
 
-      res.status(201).json(newUser.rows[0]);
+      const tokenObject = await utils.issueJWT(newUser.rows[0]);
+
+      res.status(201).json({
+        user: newUser.rows[0],
+        success: true,
+        token: tokenObject.token,
+        expiresIn: tokenObject.expires,
+      });
     }
   } catch (err) {
     console.log(err);
@@ -66,7 +76,7 @@ router.post("/register", async function (req, res) {
 router.get(
   "/protected",
   passport.authenticate("jwt", { session: false }),
-  (req, res, next) => {
+  (req, res) => {
     res.status(200).json({
       success: true,
       msg: "You are successfully authenticated to this route!",
