@@ -8,13 +8,12 @@ const baseUrl = `${env.API_URL}/todos`;
 
 const EditTodo = ({ todo, handleClose }) => {
   const [description, setDescription] = useState(todo.description);
-  const api = axios.create({ baseUrl });
 
   const updateDescription = async (e) => {
     e.preventDefault();
     try {
       const body = { description }; // TODO: Look into why not working
-      await api.put(`${baseUrl}/${todo.todo_id}`, {
+      await axios.put(`${baseUrl}/${todo.todo_id}`, {
         description: body.description,
       });
       window.location = "/";

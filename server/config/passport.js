@@ -1,9 +1,10 @@
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const pool = require("./db");
+require("dotenv").config();
 
-// The verifying public key
-const SECRET = "testing";
+// The verifying secret
+const SECRET = process.env.TOKEN_SECRET;
 
 // At a minimum, you must pass the `jwtFromRequest` and `secretOrKey` properties
 const options = {

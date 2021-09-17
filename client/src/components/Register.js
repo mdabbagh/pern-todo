@@ -18,15 +18,13 @@ const Register = () => {
 
   const { setUser } = useContext(UserContext);
 
-  const api = axios.create({ baseUrl });
-
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
       const body = { firstname, lastname, email, password, confirmPassword };
 
       // Post to register, objects in response: user, token, success, and expiresIn
-      const response = await api.post(baseUrl, {
+      const response = await axios.post(baseUrl, {
         firstname: body.firstname,
         lastname: body.lastname,
         email: body.email,
@@ -34,7 +32,8 @@ const Register = () => {
       });
       // Set localStorage token to use in axios interceptor
       localStorage.setItem("token", response.data.token);
-      setUser(response.data.user.user_id);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      setUser(localStorage.getItem("user"));
       // Redirect to home page
       history.push("/");
     } catch (err) {

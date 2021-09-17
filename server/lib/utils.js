@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
+require("dotenv").config();
 
 /**
  *
@@ -42,12 +43,14 @@ async function issueJWT(user) {
 
   const payload = {
     sub: userId,
-    iat: Date.now(),
   };
+
+  //console.log(Date.now().);
 
   // Use HS256 here since everything is managed under the same app
   // In applications where data is exchanged between 2 independent parties, use RSA256 (pub/private keys)
-  const signedToken = jsonwebtoken.sign(payload, "testing", {
+  // TODO: Make secret an env var
+  const signedToken = jsonwebtoken.sign(payload, process.env.TOKEN_SECRET, {
     expiresIn: expiresIn,
   });
 

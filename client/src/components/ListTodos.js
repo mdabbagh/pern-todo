@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useContext } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -11,7 +11,6 @@ import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
 import axios from "axios";
 import env from "react-dotenv";
-import { UserContext } from "../UserContext";
 
 import EditTodo from "./EditTodo";
 import InputTodo from "./InputTodo";
@@ -43,15 +42,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ListTodos = () => {
-  const api = axios.create({ baseUrl });
-
   const classes = useStyles();
   const [todos, setTodos] = useState([]);
   const [modalStyle] = useState(getModalStyle);
   const [modalState, setModalState] = useState({ open: false, todoId: null });
-
-  const { user } = useContext(UserContext);
-  console.log("THE USER IS" + user);
 
   const handleOpen = (todoId) => () => {
     setModalState({ open: true, todoId: todoId });
@@ -63,7 +57,7 @@ const ListTodos = () => {
 
   const deleteTodo = async (todoId) => {
     try {
-      await api.delete(`${baseUrl}/${todoId}`);
+      await axios.delete(`${baseUrl}/${todoId}`);
       setTodos(todos.filter((todo) => todo.todo_id !== todoId));
     } catch (err) {
       console.log(err);
@@ -73,7 +67,7 @@ const ListTodos = () => {
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const response = await api.get(baseUrl);
+        const response = await axios.get(baseUrl);
         setTodos(response.data);
       } catch (err) {
         console.log(err);

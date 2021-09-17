@@ -5,8 +5,7 @@ import PropTypes from "prop-types";
 
 function PrivateRoute({ component: Component, ...rest }) {
   const { user } = useContext(UserContext);
-  console.log("THE USER IN PRIVATE ROUTE IS");
-  console.log(user);
+
   return (
     <Route
       {...rest}

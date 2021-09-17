@@ -7,16 +7,15 @@ const baseUrl = `${env.API_URL}/todos`;
 
 const InputTodo = () => {
   const [description, setDescription] = useState("");
-  const api = axios.create({ baseUrl });
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
       const body = { description }; // TODO: Look into why not working
-      await api.post(baseUrl, {
+      await axios.post(baseUrl, {
         description: body.description,
       });
-      window.location = "/todos";
+      window.location = "/";
     } catch (err) {
       console.log(err);
     }

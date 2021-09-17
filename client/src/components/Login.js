@@ -11,7 +11,6 @@ const Login = () => {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState([]);
 
   const { setUser } = useContext(UserContext);
 
@@ -26,26 +25,18 @@ const Login = () => {
         email: body.email,
         password: body.password,
       });
+
       localStorage.setItem("token", response.data.token);
-      console.log(response.data.user);
-      setUser(response.data.user.user_id);
-      console.log("ABOUT TO REDIRECT TO TODOS");
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      setUser(localStorage.getItem("user"));
       history.push("/");
     } catch (err) {
       console.log(err);
-      setErrors(errors.push("Something went wrong. Please try again."));
     }
   };
 
   return (
     <Fragment>
-      {errors.length > 0 &&
-        errors.forEach(
-          (error) =>
-            function () {
-              <div>{error}</div>;
-            }
-        )}
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <h1>Login</h1>

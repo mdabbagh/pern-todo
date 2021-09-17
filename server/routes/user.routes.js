@@ -4,45 +4,46 @@ const utils = require("../lib/utils");
 const passport = require("passport");
 
 // http://localhost:3000/users/login
-router.post("/login", async function (req, res, next) {
+router.post("/login", async function (req, res) {
   try {
     const user = await pool.query("SELECT * FROM users WHERE email = $1", [
       req.body.email,
     ]);
 
-    if (!user) {
+    if (user.rowCount == 0) {
       res.status(401).json({ success: false, msg: "could not find user" });
-    }
-
-    const isValid = await utils.validPassword(
-      req.body.password,
-      user.rows[0].password
-    );
-
-    if (isValid) {
-      const tokenObject = await utils.issueJWT(user.rows[0]);
-      // Remove password field before returning user object
-      delete user.rows[0]["password"];
-
-      res.status(200).json({
-        user: user.rows[0],
-        success: true,
-        token: tokenObject.token,
-        expiresIn: tokenObject.expires,
-      });
     } else {
-      res
-        .status(401)
-        .json({ success: false, msg: "you entered the wrong password" });
+      const isValid = await utils.validPassword(
+        req.body.password,
+        user.rows[0].password
+      );
+
+      if (isValid) {
+        const tokenObject = await utils.issueJWT(user.rows[0]);
+        // Remove password field before returning user object
+        delete user.rows[0]["password"];
+
+        res.status(200).json({
+          user: user.rows[0],
+          success: true,
+          token: tokenObject.token,
+          expiresIn: tokenObject.expires,
+        });
+      } else {
+        res
+          .status(401)
+          .json({ success: false, msg: "you entered the wrong password" });
+      }
     }
   } catch (err) {
-    next(err);
+    console.log(err);
   }
 });
 
 // http://localhost:3000/users/register
 router.post("/register", async function (req, res) {
   try {
+    console.log("IN REGISTER");
     const { firstname, lastname, email, password } = req.body;
     // Check if user exists, if so, send back error
     const existingUser = await pool.query(
@@ -74,13 +75,19 @@ router.post("/register", async function (req, res) {
 });
 
 router.get(
-  "/protected",
+  "/:id",
   passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    res.status(200).json({
-      success: true,
-      msg: "You are successfully authenticated to this route!",
-    });
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await pool.query("SELECT * FROM users WHERE user_id = $1", [
+        id,
+      ]);
+
+      res.json(user.rows[0]);
+    } catch (err) {
+      console.log(err);
+    }
   }
 );
 

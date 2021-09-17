@@ -4,7 +4,7 @@ const passport = require("passport");
 
 // Create todo
 router.post(
-  "/todos",
+  "/",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
@@ -23,7 +23,7 @@ router.post(
 
 // Get all todos
 router.get(
-  "/todos",
+  "/",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
@@ -38,7 +38,7 @@ router.get(
 
 // Get a todo
 router.get(
-  "/todos/:id",
+  "/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
@@ -56,7 +56,7 @@ router.get(
 
 // Update a todo
 router.put(
-  "/todos/:id",
+  "/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
@@ -76,7 +76,7 @@ router.put(
 
 // Delete a todo
 router.delete(
-  "/todos/:id",
+  "/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
