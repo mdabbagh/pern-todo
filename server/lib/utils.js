@@ -45,8 +45,6 @@ async function issueJWT(user) {
     sub: userId,
   };
 
-  //console.log(Date.now().);
-
   // Use HS256 here since everything is managed under the same app
   // In applications where data is exchanged between 2 independent parties, use RSA256 (pub/private keys)
   // TODO: Make secret an env var

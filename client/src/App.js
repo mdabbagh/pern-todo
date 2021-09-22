@@ -47,20 +47,20 @@ function App() {
   return (
     <Router>
       <UserContext.Provider value={{ user, setUser }}>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              Welcome {user ? JSON.parse(user).email : ""}
-            </Typography>
-            {user && (
+        {user && (
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Welcome {user ? JSON.parse(user).email : ""}
+              </Typography>
               <Button color="inherit" onClick={handleLogout}>
                 Logout
               </Button>
-            )}
-          </Toolbar>
-        </AppBar>
+            </Toolbar>
+          </AppBar>
+        )}
         <div className={classes.root}>
-          <Grid container spacing={2}>
+          <Grid container>
             <Switch>
               <PublicRoute
                 exact

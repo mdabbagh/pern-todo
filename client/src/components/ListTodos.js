@@ -9,6 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
+import { Grid } from "@material-ui/core";
 import axios from "axios";
 import env from "react-dotenv";
 
@@ -79,57 +80,65 @@ const ListTodos = () => {
 
   return (
     <Fragment>
-      <InputTodo />
-      <TableContainer component={Paper} className={classes.tableContainer}>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>Edit</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>Delete</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {todos.map((todo) => (
-              <TableRow key={todo.todo_id}>
-                <TableCell component="th" scope="row">
-                  {todo.description}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleOpen(todo.todo_id)}
-                  >
-                    Edit Todo
-                  </Button>
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => deleteTodo(todo.todo_id)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-            <Modal open={modalState.open} onClose={handleClose}>
-              <div style={modalStyle} className={classes.paper}>
-                <EditTodo
-                  todo={
-                    todos.filter(
-                      (todo) => todo.todo_id === modalState.todoId
-                    )[0]
-                  }
-                  handleClose={handleClose}
-                />
-              </div>
-            </Modal>
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Grid container spacing={2}>
+        <Grid item xs={12} p={2}>
+          <InputTodo />
+        </Grid>
+        <Grid item xs={12}>
+          <TableContainer component={Paper} className={classes.tableContainer}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    Description
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>Edit</TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>Delete</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {todos.map((todo) => (
+                  <TableRow key={todo.todo_id}>
+                    <TableCell component="th" scope="row">
+                      {todo.description}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleOpen(todo.todo_id)}
+                      >
+                        Edit Todo
+                      </Button>
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => deleteTodo(todo.todo_id)}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                <Modal open={modalState.open} onClose={handleClose}>
+                  <div style={modalStyle} className={classes.paper}>
+                    <EditTodo
+                      todo={
+                        todos.filter(
+                          (todo) => todo.todo_id === modalState.todoId
+                        )[0]
+                      }
+                      handleClose={handleClose}
+                    />
+                  </div>
+                </Modal>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+      </Grid>
     </Fragment>
   );
 };

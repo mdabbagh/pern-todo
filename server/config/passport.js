@@ -20,7 +20,7 @@ module.exports = (passport) => {
     new JwtStrategy(options, function (jwt_payload, done) {
       // Since we are here, the JWT is valid!
       pool.query(
-        "SELECT * FROM users WHERE user_id = $1",
+        'SELECT * FROM "user" WHERE user_id = $1',
         [jwt_payload.sub],
         (err, user) => {
           if (err) {

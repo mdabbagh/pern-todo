@@ -8,10 +8,11 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
+      const userId = req.user.rows[0].user_id;
       const { description } = req.body;
       const newTodo = await pool.query(
-        "INSERT INTO todo (description) VALUES($1) RETURNING *",
-        [description]
+        "INSERT INTO todo (user_id, description) VALUES($1, $2) RETURNING *",
+        [userId, description]
       );
 
       res.json(newTodo.rows[0]);
@@ -27,7 +28,11 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const allTodos = await pool.query("SELECT * FROM todo");
+      const userId = req.user.rows[0].user_id;
+      const allTodos = await pool.query(
+        "SELECT * FROM todo WHERE user_id = $1",
+        [userId]
+      );
 
       res.json(allTodos.rows);
     } catch (err) {
@@ -42,10 +47,12 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
+      const userId = req.user.rows[0].user_id;
       const { id } = req.params;
-      const todo = await pool.query("SELECT * FROM todo WHERE todo_id = $1", [
-        id,
-      ]);
+      const todo = await pool.query(
+        "SELECT * FROM todo WHERE todo_id = $1 AND user_id = $2",
+        [id, userId]
+      );
 
       res.json(todo.rows[0]);
     } catch (err) {
@@ -60,11 +67,12 @@ router.put(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
+      const userId = req.user.rows[0].user_id;
       const { id } = req.params;
       const { description } = req.body;
       const updatedTodo = await pool.query(
-        "UPDATE todo SET description = $1 WHERE todo_id = $2 RETURNING *",
-        [description, id]
+        "UPDATE todo SET description = $1 WHERE todo_id = $2 AND user_id = $3 RETURNING *",
+        [description, id, userId]
       );
 
       res.json(updatedTodo.rows[0]);
@@ -80,10 +88,11 @@ router.delete(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
+      const userId = req.user.rows[0].user_id;
       const { id } = req.params;
       const deletedTodo = await pool.query(
-        "DELETE FROM todo WHERE todo_id = $1 RETURNING *",
-        [id]
+        "DELETE FROM todo WHERE todo_id = $1 AND user_id = $2 RETURNING *",
+        [id, userId]
       );
 
       res.json(deletedTodo.rows[0]);

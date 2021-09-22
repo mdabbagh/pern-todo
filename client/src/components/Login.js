@@ -1,11 +1,12 @@
 import React, { Fragment, useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import env from "react-dotenv";
 import { UserContext } from "../UserContext";
 import { useHistory } from "react-router-dom";
 
-const baseUrl = `${env.API_URL}/users/login`;
+const baseUrl = `${env.API_URL}/auth/login`;
 
 const Login = () => {
   const history = useHistory();
@@ -37,42 +38,66 @@ const Login = () => {
 
   return (
     <Fragment>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <h1>Login</h1>
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            required
-            label="email"
-            id="email"
-            variant="outlined"
-            autoComplete="off"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            id="password"
-            label="Password"
-            type="password"
-            variant="outlined"
-            autoComplete="off"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ height: "100%" }}
-            onClick={(e) => onSubmitForm(e)}
+      <Grid
+        container
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+        direction="row"
+      >
+        <Grid item xs={0} md={4}></Grid>
+        <Grid item xs={12} md={4}>
+          <Grid
+            container
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}
           >
-            Login
-          </Button>
+            <Grid item xs={12}>
+              <h1>Login</h1>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                required
+                label="Email"
+                fullWidth
+                id="email"
+                variant="outlined"
+                autoComplete="off"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                id="password"
+                label="Password"
+                fullWidth
+                required
+                type="password"
+                variant="outlined"
+                autoComplete="off"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                fullWidth
+                color="primary"
+                style={{ height: "100%" }}
+                onClick={(e) => onSubmitForm(e)}
+              >
+                Login
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              Need an account? <Link to="/register">Register</Link>
+            </Grid>
+          </Grid>
         </Grid>
+        <Grid item xs={0} md={4}></Grid>
       </Grid>
     </Fragment>
   );
