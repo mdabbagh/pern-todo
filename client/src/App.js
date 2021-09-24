@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { Grid, Button } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { BrowserRouter as Router, Switch } from "react-router-dom";
-import AppBar from "@material-ui/core/AppBar";
-import { Typography } from "@material-ui/core";
-import { Toolbar } from "@material-ui/core";
 
 import { UserContext } from "./UserContext";
 import ListTodos from "./components/ListTodos";
 import Register from "./components/Register";
 import Login from "./components/Login";
+import EditUser from "./components/EditUser";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
+import Navbar from "./components/Navbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,30 +37,18 @@ function App() {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-  };
-
   return (
     <Router>
       <UserContext.Provider value={{ user, setUser }}>
-        {user && (
-          <AppBar position="static">
-            <Toolbar>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Welcome {user ? JSON.parse(user).email : ""}
-              </Typography>
-              <Button color="inherit" onClick={handleLogout}>
-                Logout
-              </Button>
-            </Toolbar>
-          </AppBar>
-        )}
+        {user && <Navbar />}
         <div className={classes.root}>
           <Grid container>
             <Switch>
+              <PrivateRoute
+                exact
+                path="/user"
+                component={EditUser}
+              ></PrivateRoute>
               <PublicRoute
                 exact
                 path="/register"
