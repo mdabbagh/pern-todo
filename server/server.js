@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(
     extended: true,
   })
 );
+app.use(cookieParser());
 
 require("./config/passport")(passport);
 app.use(passport.initialize());

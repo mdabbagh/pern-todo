@@ -12,6 +12,7 @@ import EditUser from "./components/EditUser";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import Navbar from "./components/Navbar";
+import inMemoryJWT from "./token";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,11 +31,22 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Make call to BE to get current user based on token which contains sub
-    const existingUser = localStorage.getItem("user");
-    if (existingUser) {
-      setUser(existingUser);
-    }
+    const checkToken = async () => {
+      // See if we have an existing access token in memory
+      const accessToken = await inMemoryJWT.getToken();
+      if (accessToken) {
+        setUser(localStorage.getItem("user"));
+      } else {
+        // Try refresh_token to get a new access token
+        try {
+          await inMemoryJWT.refreshToken();
+          setUser(localStorage.getItem("user"));
+        } catch (err) {
+          console.log("Failed to refrsh token");
+        }
+      }
+    };
+    checkToken();
   }, []);
 
   return (

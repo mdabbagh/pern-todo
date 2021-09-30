@@ -6,6 +6,8 @@ import env from "react-dotenv";
 import { UserContext } from "../UserContext";
 import { useHistory } from "react-router-dom";
 
+import inMemoryJWT from "../token";
+
 const baseUrl = `${env.API_URL}/auth/login`;
 
 const Login = () => {
@@ -27,7 +29,8 @@ const Login = () => {
         password: body.password,
       });
 
-      localStorage.setItem("token", response.data.token);
+      await inMemoryJWT.setToken(response.data.token);
+
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setUser(localStorage.getItem("user"));
       history.push("/");
@@ -45,7 +48,7 @@ const Login = () => {
         alignItems="center"
         direction="row"
       >
-        <Grid item xs={0} md={4}></Grid>
+        <Grid item md={4}></Grid>
         <Grid item xs={12} md={4}>
           <Grid
             container
@@ -97,7 +100,7 @@ const Login = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={0} md={4}></Grid>
+        <Grid item md={4}></Grid>
       </Grid>
     </Fragment>
   );

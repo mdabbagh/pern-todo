@@ -37,9 +37,8 @@ async function genPassword(password) {
 /**
  * @param {*} user - The user object.  We need this to set the JWT `sub` payload property to the MongoDB user ID
  */
-async function issueJWT(user) {
+async function issueJWT(user, expiresIn = "5m") {
   const userId = user.user_id;
-  const expiresIn = "1d";
 
   const payload = {
     sub: userId,
@@ -54,10 +53,35 @@ async function issueJWT(user) {
 
   return {
     token: "Bearer " + signedToken,
-    expires: expiresIn,
   };
+}
+
+async function validateJwt(jwt) {
+  try {
+    const stripToken = jwt.token.split(" ")[1];
+
+    const token = await jsonwebtoken.verify(
+      stripToken,
+      process.env.TOKEN_SECRET
+    );
+    return token;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+async function decodeToken(jwt) {
+  try {
+    const decodedToken = jsonwebtoken.decode(jwt);
+    return decodedToken;
+  } catch (err) {
+    return false;
+  }
 }
 
 module.exports.validPassword = validPassword;
 module.exports.genPassword = genPassword;
 module.exports.issueJWT = issueJWT;
+module.exports.validateJwt = validateJwt;
+module.exports.decodeToken = decodeToken;

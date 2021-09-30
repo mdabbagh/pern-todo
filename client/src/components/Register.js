@@ -5,6 +5,7 @@ import axios from "axios";
 import env from "react-dotenv";
 import { UserContext } from "../UserContext";
 import { useHistory } from "react-router-dom";
+import inMemoryJWT from "../token";
 
 const baseUrl = `${env.API_URL}/auth/register`;
 
@@ -32,7 +33,7 @@ const Register = () => {
         password: body.password,
       });
       // Set localStorage token to use in axios interceptor
-      localStorage.setItem("token", response.data.token);
+      await inMemoryJWT.setToken(response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setUser(localStorage.getItem("user"));
       // Redirect to home page

@@ -1,22 +1,26 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import PropTypes from "prop-types";
+import inMemoryJWT from "./token";
 
 function PrivateRoute({ component: Component, ...rest }) {
   const { user } = useContext(UserContext);
   const [authChecked, setAuthChecked] = useState(false);
+  const token = inMemoryJWT.getToken();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setAuthChecked(true);
-    }
+    const checkToken = async () => {
+      await inMemoryJWT.getToken();
 
-    console.log("TOKEN ->", token);
+      if (token) {
+        setAuthChecked(true);
+      }
+    };
+    checkToken();
   }, []);
 
-  if (!authChecked) return null; // <-- the trick!
+  if (!authChecked) return <Fragment>Test</Fragment>;
 
   return (
     <Route
