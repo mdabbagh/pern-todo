@@ -21,13 +21,15 @@ const inMemoryJWTManager = () => {
       if (response.status !== 200) {
         deleteToken();
 
-        return false;
+        return { success: false };
       } else {
         setToken(response.data.token);
-        return true;
+        return { success: true, user: response.data.user };
       }
     } catch (err) {
+      deleteToken();
       console.log(err);
+      //return { success: false };
     }
   };
 

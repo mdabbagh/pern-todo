@@ -17,27 +17,24 @@ router.post("/login", async function (req, res) {
       );
 
       if (isValid) {
-        const tokenObject = await utils.issueJWT(user.rows[0]);
+        const accessToken = await utils.issueJWT(user.rows[0], "2m");
         // Remove password field before returning user object
         delete user.rows[0]["password"];
 
         const refreshToken = await utils.issueJWT(user.rows[0], "10m");
 
         // Create httpOnly cookie to store the refresh token
-        res.cookie("refresh_token", refreshToken, {
-          expiresIn: "10m",
-          domain: "localhost",
-          path: "/",
-          httpOnly: true,
-          secure: true, // False for dev, but should be true in production
-          sameSite: "None",
-        });
+        res.cookie(
+          "refresh_token",
+          refreshToken,
+          generateRefreshTokenCookieArgs()
+        );
 
         res.status(200).json({
           user: user.rows[0],
           success: true,
-          token: tokenObject.token,
-          expiresIn: tokenObject.expires,
+          token: accessToken.token,
+          expiresIn: accessToken.expires,
         });
       } else {
         res
@@ -70,17 +67,15 @@ router.post("/register", async function (req, res) {
       );
 
       // Generate new access and refresh tokens
-      const accessToken = await utils.issueJWT(newUser.rows[0]);
+      const accessToken = await utils.issueJWT(newUser.rows[0], "2m");
       const refreshToken = await utils.issueJWT(newUser.rows[0], "10m");
 
       // Create httpOnly cookie to store the refresh token
-      res.cookie("refresh_token", refreshToken, {
-        expiresIn: "10m",
-        domain: "localhost",
-        httpOnly: true,
-        secure: false, // False for dev, but should be true in production
-        sameSite: "none",
-      });
+      res.cookie(
+        "refresh_token",
+        refreshToken,
+        generateRefreshTokenCookieArgs()
+      );
 
       // Send response with access token in the body
       res.status(201).json({
@@ -106,12 +101,12 @@ router.get("/refresh_token", async function (req, res) {
     const validRefreshToken = await utils.validateJwt(refreshToken);
 
     if (!validRefreshToken || Date.now() > validRefreshToken.exp * 1000) {
-      res.status(401).json("Unauthorized");
+      res.status(401).json("Token expired");
       return;
     }
 
     const existingUser = await pool.query(
-      'SELECT * FROM "user" WHERE user_id = $1',
+      'SELECT user_id, firstname, lastname, email FROM "user" WHERE user_id = $1',
       [validRefreshToken.sub]
     );
 
@@ -119,11 +114,23 @@ router.get("/refresh_token", async function (req, res) {
     res.status(200).json({
       success: true,
       token: accessToken.token,
+      user: existingUser.rows[0],
     });
   } catch (err) {
     console.log(err);
     res.status(400).json("Unauthorized");
   }
 });
+
+const generateRefreshTokenCookieArgs = () => {
+  return {
+    domain: "localhost",
+    path: "/",
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    expires: new Date(Date.now() + 5 * 60000), // Add 5 minutes
+  };
+};
 
 module.exports = router;

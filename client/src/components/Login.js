@@ -1,10 +1,10 @@
 import React, { Fragment, useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import env from "react-dotenv";
 import { UserContext } from "../UserContext";
 import { useHistory } from "react-router-dom";
+import http from "../http";
 
 import inMemoryJWT from "../token";
 
@@ -17,20 +17,17 @@ const Login = () => {
 
   const { setUser } = useContext(UserContext);
 
-  const api = axios.create({ baseUrl });
-
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
       const body = { email, password };
 
-      const response = await api.post(baseUrl, {
+      const response = await http.post(baseUrl, {
         email: body.email,
         password: body.password,
       });
 
       await inMemoryJWT.setToken(response.data.token);
-
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setUser(localStorage.getItem("user"));
       history.push("/");

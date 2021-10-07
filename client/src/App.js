@@ -31,7 +31,8 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const checkToken = async () => {
+    // This will run on page refresh and initial page load only
+    async function checkToken() {
       // See if we have an existing access token in memory
       const accessToken = await inMemoryJWT.getToken();
       if (accessToken) {
@@ -39,13 +40,18 @@ function App() {
       } else {
         // Try refresh_token to get a new access token
         try {
-          await inMemoryJWT.refreshToken();
-          setUser(localStorage.getItem("user"));
+          const refreshToken = await inMemoryJWT.refreshToken();
+          if (!refreshToken) {
+            setUser(null);
+          } else {
+            setUser(localStorage.getItem("user"));
+          }
         } catch (err) {
+          setUser(null);
           console.log("Failed to refrsh token");
         }
       }
-    };
+    }
     checkToken();
   }, []);
 

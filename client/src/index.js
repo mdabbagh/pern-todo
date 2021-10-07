@@ -4,25 +4,6 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "@fontsource/roboto";
-import axios from "axios";
-import inMemoryJWT from "./token";
-
-axios.interceptors.request.use(
-  function (config) {
-    if (config.url.includes("users") || config.url.includes("todos")) {
-      inMemoryJWT.getToken().then((token) => {
-        if (token) {
-          config.headers["Authorization"] = token;
-        }
-      });
-    }
-
-    return config;
-  },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
 
 ReactDOM.render(
   <React.StrictMode>

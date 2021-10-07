@@ -1,11 +1,11 @@
 import React, { Fragment, useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import env from "react-dotenv";
 import { UserContext } from "../UserContext";
 import { useHistory } from "react-router-dom";
 import inMemoryJWT from "../token";
+import http from "../http";
 
 const baseUrl = `${env.API_URL}/auth/register`;
 
@@ -26,7 +26,7 @@ const Register = () => {
       const body = { firstname, lastname, email, password, confirmPassword };
 
       // Post to register, objects in response: user, token, success, and expiresIn
-      const response = await axios.post(baseUrl, {
+      const response = await http.post(baseUrl, {
         firstname: body.firstname,
         lastname: body.lastname,
         email: body.email,

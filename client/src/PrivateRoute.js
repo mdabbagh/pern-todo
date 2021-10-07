@@ -11,7 +11,7 @@ function PrivateRoute({ component: Component, ...rest }) {
 
   useEffect(() => {
     const checkToken = async () => {
-      await inMemoryJWT.getToken();
+      //await inMemoryJWT.getToken();
 
       if (token) {
         setAuthChecked(true);
@@ -20,7 +20,7 @@ function PrivateRoute({ component: Component, ...rest }) {
     checkToken();
   }, []);
 
-  if (!authChecked) return <Fragment>Test</Fragment>;
+  if (!authChecked) return <Fragment>Loading...</Fragment>;
 
   return (
     <Route

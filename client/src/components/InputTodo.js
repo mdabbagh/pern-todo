@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
-import axios from "axios";
 import env from "react-dotenv";
+import http from "../http";
 
 const baseUrl = `${env.API_URL}/todos`;
 
@@ -12,7 +12,7 @@ const InputTodo = () => {
     e.preventDefault();
     try {
       const body = { description }; // TODO: Look into why not working
-      await axios.post(baseUrl, {
+      await http.post(baseUrl, {
         description: body.description,
       });
       window.location = "/";

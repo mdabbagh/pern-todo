@@ -11,8 +11,7 @@ const Navbar = () => {
   const { user, setUser } = useContext(UserContext);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.clear();
     setUser(null);
   };
 

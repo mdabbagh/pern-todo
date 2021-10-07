@@ -10,11 +10,13 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
 import { Grid } from "@material-ui/core";
-import axios from "axios";
+//import axios from "axios";
 import env from "react-dotenv";
 
 import EditTodo from "./EditTodo";
 import InputTodo from "./InputTodo";
+import http from "../http";
+//import { UserContext } from "../UserContext";
 
 const baseUrl = `${env.API_URL}/todos`;
 
@@ -47,6 +49,7 @@ const ListTodos = () => {
   const [todos, setTodos] = useState([]);
   const [modalStyle] = useState(getModalStyle);
   const [modalState, setModalState] = useState({ open: false, todoId: null });
+  //const { setUser } = useContext(UserContext);
 
   const handleOpen = (todoId) => () => {
     setModalState({ open: true, todoId: todoId });
@@ -58,7 +61,7 @@ const ListTodos = () => {
 
   const deleteTodo = async (todoId) => {
     try {
-      await axios.delete(`${baseUrl}/${todoId}`);
+      await http.delete(`${baseUrl}/${todoId}`);
       setTodos(todos.filter((todo) => todo.todo_id !== todoId));
     } catch (err) {
       console.log(err);
@@ -68,9 +71,10 @@ const ListTodos = () => {
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const response = await axios.get(baseUrl);
+        const response = await http.get(`${baseUrl}`);
         setTodos(response.data);
       } catch (err) {
+        //setUser(null);
         console.log(err);
       }
     };

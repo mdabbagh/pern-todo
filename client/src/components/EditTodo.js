@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
-import axios from "axios";
 import PropTypes from "prop-types";
 import env from "react-dotenv";
+import http from "../http";
 
 const baseUrl = `${env.API_URL}/todos`;
 
@@ -13,7 +13,7 @@ const EditTodo = ({ todo, handleClose }) => {
     e.preventDefault();
     try {
       const body = { description }; // TODO: Look into why not working
-      await axios.put(`${baseUrl}/${todo.todo_id}`, {
+      await http.put(`${baseUrl}/${todo.todo_id}`, {
         description: body.description,
       });
       window.location = "/";
