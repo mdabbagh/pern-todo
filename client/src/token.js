@@ -5,10 +5,11 @@ const baseUrl = `${env.API_URL}/auth/refresh_token`;
 
 const inMemoryJWTManager = () => {
   let inMemoryJWT = null;
+  const storageKey = "logout";
 
   // This listener allows to disconnect another session of react-admin started in another tab
   window.addEventListener("storage", (event) => {
-    if (event.key === "ra-logout") {
+    if (event.key === storageKey) {
       inMemoryJWT = null;
     }
   });
@@ -29,7 +30,6 @@ const inMemoryJWTManager = () => {
     } catch (err) {
       deleteToken();
       console.log(err);
-      //return { success: false };
     }
   };
 
@@ -41,7 +41,7 @@ const inMemoryJWTManager = () => {
 
   const deleteToken = async () => {
     inMemoryJWT = null;
-    window.localStorage.setItem("ra-logout", Date.now());
+    window.localStorage.setItem(storageKey, Date.now());
   };
 
   return {
