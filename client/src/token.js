@@ -33,7 +33,7 @@ const inMemoryJWTManager = () => {
     }
   };
 
-  const getToken = async () => inMemoryJWT;
+  const getToken = () => inMemoryJWT;
 
   const setToken = async (token) => {
     inMemoryJWT = token;

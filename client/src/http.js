@@ -41,9 +41,6 @@ http.interceptors.response.use(
           originalRequest._retry = true;
           const refreshedToken = await inMemoryJwt.refreshToken();
           if (refreshedToken.success) {
-            console.log(
-              "Returning original request because refresh token success"
-            );
             return http(originalRequest);
           } else {
             originalRequest._retry = false;

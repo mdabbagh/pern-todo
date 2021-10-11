@@ -2,11 +2,13 @@ import React, { Fragment, useState } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
 import env from "react-dotenv";
 import http from "../http";
+//import { useHistory } from "react-router-dom";
 
 const baseUrl = `${env.API_URL}/todos`;
 
 const InputTodo = () => {
   const [description, setDescription] = useState("");
+  //const history = useHistory();
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
@@ -15,7 +17,7 @@ const InputTodo = () => {
       await http.post(baseUrl, {
         description: body.description,
       });
-      window.location = "/";
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }

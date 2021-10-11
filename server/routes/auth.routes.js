@@ -17,7 +17,7 @@ router.post("/login", async function (req, res) {
       );
 
       if (isValid) {
-        const accessToken = await utils.issueJWT(user.rows[0], "2m");
+        const accessToken = await utils.issueJWT(user.rows[0], "5m");
         // Remove password field before returning user object
         delete user.rows[0]["password"];
 
@@ -129,7 +129,7 @@ const generateRefreshTokenCookieArgs = () => {
     httpOnly: true,
     secure: true,
     sameSite: "None",
-    expires: new Date(Date.now() + 5 * 60000), // Add 5 minutes
+    expires: new Date(Date.now() + 10 * 60000), // Add 5 minutes
   };
 };
 

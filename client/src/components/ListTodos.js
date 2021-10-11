@@ -16,7 +16,6 @@ import env from "react-dotenv";
 import EditTodo from "./EditTodo";
 import InputTodo from "./InputTodo";
 import http from "../http";
-//import { UserContext } from "../UserContext";
 
 const baseUrl = `${env.API_URL}/todos`;
 
@@ -49,7 +48,6 @@ const ListTodos = () => {
   const [todos, setTodos] = useState([]);
   const [modalStyle] = useState(getModalStyle);
   const [modalState, setModalState] = useState({ open: false, todoId: null });
-  //const { setUser } = useContext(UserContext);
 
   const handleOpen = (todoId) => () => {
     setModalState({ open: true, todoId: todoId });

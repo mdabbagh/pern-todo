@@ -6,13 +6,16 @@ import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 import { UserContext } from "../UserContext";
+import inMemoryJWT from "../token";
 
 const Navbar = () => {
   const { user, setUser } = useContext(UserContext);
 
   const handleLogout = () => {
+    inMemoryJWT.deleteToken();
     localStorage.clear();
     setUser(null);
+    window.location.href = "/login";
   };
 
   return (

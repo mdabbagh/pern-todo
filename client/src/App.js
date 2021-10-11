@@ -48,7 +48,6 @@ function App() {
           }
         } catch (err) {
           setUser(null);
-          console.log("Failed to refrsh token");
         }
       }
     }
@@ -62,18 +61,26 @@ function App() {
         <div className={classes.root}>
           <Grid container>
             <Switch>
-              <PrivateRoute
-                exact
-                path="/user"
-                component={EditUser}
-              ></PrivateRoute>
+              {user && (
+                <PrivateRoute
+                  exact
+                  path="/user"
+                  component={EditUser}
+                ></PrivateRoute>
+              )}
+              {user && (
+                <PrivateRoute
+                  exact
+                  path="/"
+                  component={ListTodos}
+                ></PrivateRoute>
+              )}
               <PublicRoute
                 exact
                 path="/register"
                 component={Register}
               ></PublicRoute>
               <PublicRoute exact path="/login" component={Login}></PublicRoute>
-              <PrivateRoute exact path="/" component={ListTodos}></PrivateRoute>
             </Switch>
           </Grid>
         </div>
