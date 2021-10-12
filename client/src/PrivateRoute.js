@@ -1,29 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import PropTypes from "prop-types";
 
 function PrivateRoute({ component: Component, ...rest }) {
-  const { user } = useContext(UserContext);
-  const [authChecked, setAuthChecked] = useState(false);
+  const { user, isLoading } = useContext(UserContext);
 
-  useEffect(() => {
-    const userItem = localStorage.getItem("user");
-    if (userItem) {
-      setAuthChecked(true);
-    }
-  }, []);
+  if (isLoading) return <div>Loading</div>;
 
-  if (!authChecked) return <div>Loading</div>;
-
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        user != null ? <Component {...props} /> : <Redirect exact to="/login" />
-      }
-    />
-  );
+  if (user) {
+    return <Route {...rest} render={(props) => <Component {...props} />} />;
+  } else {
+    return <Redirect to="/login" />;
+  }
 }
 
 PrivateRoute.propTypes = {

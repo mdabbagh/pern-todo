@@ -1,39 +1,19 @@
-import React, { Fragment, useState, useContext } from "react";
+import React, { Fragment, useState } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import env from "react-dotenv";
-import { UserContext } from "../UserContext";
-import { useHistory } from "react-router-dom";
-import http from "../http";
+import useAuth from "../hooks/useAuth";
 
-import inMemoryJWT from "../token";
-
-const baseUrl = `${env.API_URL}/auth/login`;
+//import inMemoryJWT from "../token";
 
 const Login = () => {
-  const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { setUser } = useContext(UserContext);
+  const { loginUser, error } = useAuth();
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    try {
-      const body = { email, password };
-
-      const response = await http.post(baseUrl, {
-        email: body.email,
-        password: body.password,
-      });
-
-      await inMemoryJWT.setToken(response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      setUser(localStorage.getItem("user"));
-      history.push("/");
-    } catch (err) {
-      console.log(err);
-    }
+    await loginUser(email, password);
   };
 
   return (
@@ -55,6 +35,9 @@ const Login = () => {
           >
             <Grid item xs={12}>
               <h1>Login</h1>
+            </Grid>
+            <Grid item xs={12}>
+              {error && <Fragment>Error</Fragment>}
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField

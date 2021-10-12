@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./App.css";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -12,7 +12,7 @@ import EditUser from "./components/EditUser";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import Navbar from "./components/Navbar";
-import inMemoryJWT from "./token";
+import useFindUser from "./hooks/useFindUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,53 +28,23 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // This will run on page refresh and initial page load only
-    async function checkToken() {
-      // See if we have an existing access token in memory
-      const accessToken = await inMemoryJWT.getToken();
-      if (accessToken) {
-        setUser(localStorage.getItem("user"));
-      } else {
-        // Try refresh_token to get a new access token
-        try {
-          const refreshToken = await inMemoryJWT.refreshToken();
-          if (!refreshToken) {
-            setUser(null);
-          } else {
-            setUser(localStorage.getItem("user"));
-          }
-        } catch (err) {
-          setUser(null);
-        }
-      }
-    }
-    checkToken();
-  }, []);
+  const { user, setUser, isLoading } = useFindUser();
 
   return (
     <Router>
-      <UserContext.Provider value={{ user, setUser }}>
+      <UserContext.Provider value={{ user, setUser, isLoading }}>
         {user && <Navbar />}
         <div className={classes.root}>
           <Grid container>
             <Switch>
-              {user && (
-                <PrivateRoute
-                  exact
-                  path="/user"
-                  component={EditUser}
-                ></PrivateRoute>
-              )}
-              {user && (
-                <PrivateRoute
-                  exact
-                  path="/"
-                  component={ListTodos}
-                ></PrivateRoute>
-              )}
+              <PrivateRoute
+                exact
+                path="/user"
+                component={EditUser}
+              ></PrivateRoute>
+
+              <PrivateRoute exact path="/" component={ListTodos}></PrivateRoute>
+
               <PublicRoute
                 exact
                 path="/register"

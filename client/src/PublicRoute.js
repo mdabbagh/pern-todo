@@ -4,16 +4,15 @@ import { UserContext } from "./UserContext";
 import PropTypes from "prop-types";
 
 function PublicRoute({ component: Component, ...rest }) {
-  const { user } = useContext(UserContext);
+  const { user, isLoading } = useContext(UserContext);
 
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        user === null ? <Component {...props} /> : <Redirect exact to="/" />
-      }
-    />
-  );
+  if (isLoading) return <div>Loading</div>;
+
+  if (!user) {
+    return <Route {...rest} render={(props) => <Component {...props} />} />;
+  } else {
+    return <Redirect to="/" />;
+  }
 }
 
 PublicRoute.propTypes = {

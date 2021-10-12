@@ -17,7 +17,7 @@ router.post("/login", async function (req, res) {
       );
 
       if (isValid) {
-        const accessToken = await utils.issueJWT(user.rows[0], "5m");
+        const accessToken = await utils.issueJWT(user.rows[0], "2m");
         // Remove password field before returning user object
         delete user.rows[0]["password"];
 
@@ -122,6 +122,19 @@ router.get("/refresh_token", async function (req, res) {
   }
 });
 
+router.get("/logout", async function (req, res) {
+  try {
+    res.clearCookie("refresh_token");
+    // Send response with access token in the body
+    res.status(200).json({
+      success: "success",
+    });
+  } catch (err) {
+    res.status(400).json("Something went wrong");
+    console.log(err);
+  }
+});
+
 const generateRefreshTokenCookieArgs = () => {
   return {
     domain: "localhost",
@@ -129,7 +142,7 @@ const generateRefreshTokenCookieArgs = () => {
     httpOnly: true,
     secure: true,
     sameSite: "None",
-    expires: new Date(Date.now() + 10 * 60000), // Add 5 minutes
+    expires: new Date(Date.now() + 5 * 60000), // Add 5 minutes
   };
 };
 

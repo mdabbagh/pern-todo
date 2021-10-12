@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useContext } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
 import env from "react-dotenv";
 import { UserContext } from "../UserContext";
@@ -8,42 +8,26 @@ import http from "../http";
 const baseUrl = `${env.API_URL}/users`;
 
 const EditUser = () => {
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
+  const { user, setUser } = useContext(UserContext);
+
+  const [firstname, setFirstname] = useState(user.firstname);
+  const [lastname, setLastname] = useState(user.lastname);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { user, setUser } = useContext(UserContext);
   const history = useHistory();
-
-  useEffect(() => {
-    // Get user from API
-    // Set the initial values for firstname, lastname to place in the fields
-    const getUser = async () => {
-      try {
-        const userId = JSON.parse(user).user_id;
-        const response = await http.get(`${baseUrl}/${userId}`);
-        setFirstname(response.data.firstname);
-        setLastname(response.data.lastname);
-      } catch (err) {
-        setUser(null);
-      }
-    };
-    getUser();
-  }, []);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
       const body = { firstname, lastname, password, confirmPassword };
-      const userId = JSON.parse(user).user_id;
-      await http.put(`${baseUrl}/${userId}`, {
+      const userId = user.user_id;
+      const updatedUser = await http.put(`${baseUrl}/${userId}`, {
         firstname: body.firstname,
         lastname: body.lastname,
         password: body.password,
       });
-      setPassword("");
-      setConfirmPassword("");
+      setUser(updatedUser.data);
       history.push("/user");
     } catch (err) {
       console.log(err);

@@ -4,18 +4,16 @@ import { Typography } from "@material-ui/core";
 import { Toolbar } from "@material-ui/core";
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 import { UserContext } from "../UserContext";
-import inMemoryJWT from "../token";
 
 const Navbar = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const { logoutUser } = useAuth();
 
-  const handleLogout = () => {
-    inMemoryJWT.deleteToken();
-    localStorage.clear();
-    setUser(null);
-    window.location.href = "/login";
+  const handleLogout = async () => {
+    await logoutUser();
   };
 
   return (
@@ -23,7 +21,7 @@ const Navbar = () => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Welcome {user ? JSON.parse(user).email : ""}
+            Welcome {user ? user.email : ""}
           </Typography>
           <Button component={Link} to="/" color="inherit">
             Home
