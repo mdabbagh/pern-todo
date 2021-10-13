@@ -10,14 +10,10 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
 import { Grid } from "@material-ui/core";
-//import axios from "axios";
-import env from "react-dotenv";
 
 import EditTodo from "./EditTodo";
 import InputTodo from "./InputTodo";
-import http from "../http";
-
-const baseUrl = `${env.API_URL}/todos`;
+import { getTodos, deleteTodo } from "../services/todoService";
 
 function getModalStyle() {
   return {
@@ -57,9 +53,9 @@ const ListTodos = () => {
     setModalState({ open: false });
   };
 
-  const deleteTodo = async (todoId) => {
+  const deleteTodoHandler = async (todoId) => {
     try {
-      await http.delete(`${baseUrl}/${todoId}`);
+      await deleteTodo(todoId);
       setTodos(todos.filter((todo) => todo.todo_id !== todoId));
     } catch (err) {
       console.log(err);
@@ -67,16 +63,16 @@ const ListTodos = () => {
   };
 
   useEffect(() => {
-    const getTodos = async () => {
+    const getAllTodos = async () => {
       try {
-        const response = await http.get(`${baseUrl}`);
+        const response = await getTodos();
         setTodos(response.data);
       } catch (err) {
         //setUser(null);
         console.log(err);
       }
     };
-    getTodos();
+    getAllTodos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -117,7 +113,7 @@ const ListTodos = () => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => deleteTodo(todo.todo_id)}
+                        onClick={() => deleteTodoHandler(todo.todo_id)}
                       >
                         Delete
                       </Button>

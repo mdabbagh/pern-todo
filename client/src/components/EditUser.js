@@ -1,11 +1,8 @@
 import React, { Fragment, useState, useContext } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
-import env from "react-dotenv";
 import { UserContext } from "../UserContext";
 import { useHistory } from "react-router-dom";
-import http from "../http";
-
-const baseUrl = `${env.API_URL}/users`;
+import { updateUser } from "../services/userService";
 
 const EditUser = () => {
   const { user, setUser } = useContext(UserContext);
@@ -22,12 +19,10 @@ const EditUser = () => {
     try {
       const body = { firstname, lastname, password, confirmPassword };
       const userId = user.user_id;
-      const updatedUser = await http.put(`${baseUrl}/${userId}`, {
-        firstname: body.firstname,
-        lastname: body.lastname,
-        password: body.password,
-      });
+      const updatedUser = await updateUser(body, userId);
       setUser(updatedUser.data);
+      setPassword("");
+      setConfirmPassword("");
       history.push("/user");
     } catch (err) {
       console.log(err);

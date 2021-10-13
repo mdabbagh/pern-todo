@@ -34,7 +34,7 @@ router.put(
         const { firstname, lastname, password } = req.body;
         const hashedPassword = await utils.genPassword(password);
         const updatedUser = await pool.query(
-          'UPDATE "user" SET firstname = $1, lastname = $2, password = $3 WHERE user_id = $4 RETURNING firstname, lastname, email',
+          'UPDATE "user" SET firstname = $1, lastname = $2, password = $3 WHERE user_id = $4 RETURNING user_id, firstname, lastname, email',
           [firstname, lastname, hashedPassword, userId]
         );
 

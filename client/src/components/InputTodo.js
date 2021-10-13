@@ -8,7 +8,6 @@ const baseUrl = `${env.API_URL}/todos`;
 
 const InputTodo = () => {
   const [description, setDescription] = useState("");
-  //const history = useHistory();
 
   const onSubmitForm = async (e) => {
     e.preventDefault();

@@ -1,10 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
 import PropTypes from "prop-types";
-import env from "react-dotenv";
-import http from "../http";
-
-const baseUrl = `${env.API_URL}/todos`;
+import { updateTodo } from "../services/todoService";
 
 const EditTodo = ({ todo, handleClose }) => {
   const [description, setDescription] = useState(todo.description);
@@ -13,9 +10,7 @@ const EditTodo = ({ todo, handleClose }) => {
     e.preventDefault();
     try {
       const body = { description }; // TODO: Look into why not working
-      await http.put(`${baseUrl}/${todo.todo_id}`, {
-        description: body.description,
-      });
+      await updateTodo(body.description, todo.todo_id);
       window.location = "/";
     } catch (err) {
       console.log(err);
