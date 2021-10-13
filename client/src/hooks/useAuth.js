@@ -11,7 +11,6 @@ export default function useAuth() {
   const [error, setError] = useState(null);
   const baseUrl = `${env.API_URL}`;
 
-  //register user
   const registerUser = async (data) => {
     const { email, password, confirmPassword } = data;
     try {
@@ -31,7 +30,6 @@ export default function useAuth() {
     }
   };
 
-  //login user
   const loginUser = async (email, password) => {
     try {
       const response = await http.post(`${baseUrl}/auth/login`, {
@@ -48,7 +46,6 @@ export default function useAuth() {
     }
   };
 
-  //login user
   const logoutUser = async () => {
     try {
       const response = await http.get(`${baseUrl}/auth/logout`);
