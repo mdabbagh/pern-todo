@@ -1,5 +1,6 @@
-import http from "../http";
 import env from "react-dotenv";
+
+import http from "./http";
 
 const baseUrl = `${env.API_URL}/users`;
 

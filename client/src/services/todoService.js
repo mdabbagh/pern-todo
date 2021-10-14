@@ -1,5 +1,6 @@
-import http from "../http";
 import env from "react-dotenv";
+
+import http from "./http";
 
 const baseUrl = `${env.API_URL}/todos`;
 
@@ -15,7 +16,7 @@ export async function getTodo() {
 
 // Update todo
 export async function createTodo(description) {
-  return http.put(`${baseUrl}`, {
+  return http.post(`${baseUrl}`, {
     description: description,
   });
 }

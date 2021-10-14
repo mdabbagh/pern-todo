@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Button } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -9,11 +10,10 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
-import { Grid } from "@material-ui/core";
 
+import { getTodos, deleteTodo } from "../services/todoService";
 import EditTodo from "./EditTodo";
 import InputTodo from "./InputTodo";
-import { getTodos, deleteTodo } from "../services/todoService";
 
 function getModalStyle() {
   return {
@@ -68,12 +68,10 @@ const ListTodos = () => {
         const response = await getTodos();
         setTodos(response.data);
       } catch (err) {
-        //setUser(null);
         console.log(err);
       }
     };
     getAllTodos();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

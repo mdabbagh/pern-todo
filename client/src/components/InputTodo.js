@@ -1,25 +1,15 @@
 import React, { Fragment, useState } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
-import env from "react-dotenv";
-import http from "../http";
-//import { useHistory } from "react-router-dom";
 
-const baseUrl = `${env.API_URL}/todos`;
+import { createTodo } from "../services/todoService";
 
 const InputTodo = () => {
   const [description, setDescription] = useState("");
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    try {
-      const body = { description }; // TODO: Look into why not working
-      await http.post(baseUrl, {
-        description: body.description,
-      });
-      window.location.reload();
-    } catch (err) {
-      console.log(err);
-    }
+    await createTodo(description);
+    window.location.reload();
   };
 
   return (

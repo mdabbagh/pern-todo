@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import inMemoryJWT from "../token";
 
 export default function useFindUser() {

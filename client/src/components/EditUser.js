@@ -1,18 +1,18 @@
 import React, { Fragment, useState, useContext } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
-import { UserContext } from "../UserContext";
 import { useHistory } from "react-router-dom";
+
+import { UserContext } from "../UserContext";
 import { updateUser } from "../services/userService";
 
 const EditUser = () => {
+  const history = useHistory();
   const { user, setUser } = useContext(UserContext);
 
   const [firstname, setFirstname] = useState(user.firstname);
   const [lastname, setLastname] = useState(user.lastname);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  const history = useHistory();
 
   const onSubmitForm = async (e) => {
     e.preventDefault();

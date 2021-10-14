@@ -1,9 +1,8 @@
 import React, { Fragment, useState } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
 
-//import inMemoryJWT from "../token";
+import useAuth from "../hooks/useAuth";
 
 const Login = () => {
   const [email, setEmail] = useState("");

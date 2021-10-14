@@ -1,13 +1,8 @@
-import React, { Fragment, useState, useContext } from "react";
+import React, { Fragment, useState } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import env from "react-dotenv";
-import { UserContext } from "../UserContext";
-import { useHistory } from "react-router-dom";
-import inMemoryJWT from "../token";
-import http from "../http";
 
-const baseUrl = `${env.API_URL}/auth/register`;
+import useAuth from "../hooks/useAuth";
 
 const Register = () => {
   const [firstname, setFirstname] = useState("");
@@ -15,39 +10,18 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState([]);
-  const history = useHistory();
 
-  const { setUser } = useContext(UserContext);
+  const { registerUser, error } = useAuth();
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    try {
-      const body = { firstname, lastname, email, password, confirmPassword };
-
-      // Post to register, objects in response: user, token, success, and expiresIn
-      const response = await http.post(baseUrl, {
-        firstname: body.firstname,
-        lastname: body.lastname,
-        email: body.email,
-        password: body.password,
-      });
-      // Set localStorage token to use in axios interceptor
-      await inMemoryJWT.setToken(response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      setUser(localStorage.getItem("user"));
-      // Redirect to home page
-      history.push("/");
-    } catch (err) {
-      console.log(err);
-      setErrors(errors.push("Something went wrong. Please try again."));
-    }
+    await registerUser(firstname, lastname, email, password);
   };
 
   return (
     <Fragment>
       <Grid container spacing={2} justifyContent="center" alignItems="center">
-        <Grid item xs={0} md={4}></Grid>
+        <Grid item md={4}></Grid>
         <Grid item xs={12} md={4}>
           <Grid
             container
@@ -57,6 +31,9 @@ const Register = () => {
           >
             <Grid item xs={12}>
               <h1>Register</h1>
+            </Grid>
+            <Grid item xs={12}>
+              {error && <Fragment>Error</Fragment>}
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
@@ -135,7 +112,7 @@ const Register = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={0} md={4}></Grid>
+        <Grid item md={4}></Grid>
       </Grid>
     </Fragment>
   );

@@ -1,12 +1,12 @@
 import React, { Fragment, useContext } from "react";
-import AppBar from "@material-ui/core/AppBar";
 import { Typography } from "@material-ui/core";
 import { Toolbar } from "@material-ui/core";
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import AppBar from "@material-ui/core/AppBar";
 
 import { UserContext } from "../UserContext";
+import useAuth from "../hooks/useAuth";
 
 const Navbar = () => {
   const { user } = useContext(UserContext);

@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
 import PropTypes from "prop-types";
+
 import { updateTodo } from "../services/todoService";
 
 const EditTodo = ({ todo, handleClose }) => {
@@ -9,8 +10,7 @@ const EditTodo = ({ todo, handleClose }) => {
   const updateDescription = async (e) => {
     e.preventDefault();
     try {
-      const body = { description }; // TODO: Look into why not working
-      await updateTodo(body.description, todo.todo_id);
+      await updateTodo(description, todo.todo_id);
       window.location = "/";
     } catch (err) {
       console.log(err);
