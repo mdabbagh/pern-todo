@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
+  // Check if current user exists by trying to refresh token with the current access token
   const { user, setUser, isLoading } = useFindUser();
 
   return (
@@ -42,9 +43,7 @@ function App() {
                 path="/user"
                 component={EditUser}
               ></PrivateRoute>
-
               <PrivateRoute exact path="/" component={ListTodos}></PrivateRoute>
-
               <PublicRoute
                 exact
                 path="/register"

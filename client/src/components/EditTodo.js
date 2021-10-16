@@ -11,7 +11,7 @@ const EditTodo = ({ todo, handleClose }) => {
     e.preventDefault();
     try {
       await updateTodo(description, todo.todo_id);
-      window.location = "/";
+      window.location.href = "/";
     } catch (err) {
       console.log(err);
     }

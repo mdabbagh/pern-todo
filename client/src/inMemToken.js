@@ -7,15 +7,14 @@ const inMemoryJWTManager = () => {
   let inMemoryJWT = null;
   const storageKey = "logout";
 
-  // This listener allows to disconnect another session of react-admin started in another tab
+  // This listener allows to disconnect another session of the app in another tab on logout
   window.addEventListener("storage", (event) => {
     if (event.key === storageKey) {
       inMemoryJWT = null;
     }
   });
 
-  // The method makes a call to the refresh-token endpoint
-  // If there is a valid cookie, the endpoint will return a fresh jwt.
+  // Tries to refresh token, and if the cookie is valid, will return a new access token
   const refreshToken = async () => {
     try {
       const response = await axios.get(baseUrl, { withCredentials: true });

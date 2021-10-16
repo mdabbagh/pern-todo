@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import inMemoryJwt from "../token";
+import inMemoryJwt from "../inMemToken";
 
 const http = axios.create({
   crossDomain: true,

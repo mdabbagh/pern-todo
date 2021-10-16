@@ -14,7 +14,7 @@ export async function getTodo() {
   return http.get(`${baseUrl}`);
 }
 
-// Update todo
+// Create todo
 export async function createTodo(description) {
   return http.post(`${baseUrl}`, {
     description: description,

@@ -1,4 +1,4 @@
 import { createContext } from "react";
 
-//set initial value of user to null (pre-login)
+// Create new context with initial value set to null
 export const UserContext = createContext(null);

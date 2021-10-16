@@ -7,6 +7,7 @@ import Loading from "./components/Loading";
 function PrivateRoute({ component: Component, ...rest }) {
   const { user, isLoading } = useContext(UserContext);
 
+  // Need this to avoid flashing the login page before routing to the expected page
   if (isLoading) return <Loading />;
 
   if (user) {

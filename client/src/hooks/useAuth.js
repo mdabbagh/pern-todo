@@ -4,7 +4,7 @@ import { UserContext } from "../UserContext";
 import env from "react-dotenv";
 
 import http from "../services/http";
-import inMemoryJWT from "../token";
+import inMemoryJWT from "../inMemToken";
 
 export default function useAuth() {
   let history = useHistory();
@@ -22,6 +22,7 @@ export default function useAuth() {
         password: password,
       });
       if (response.status == 201) {
+        // Set in mem access token and user context
         await inMemoryJWT.setToken(response.data.token);
         setUser(response.data.user);
         history.push("/");
@@ -38,6 +39,7 @@ export default function useAuth() {
         password: password,
       });
       if (response.status == 200) {
+        // Set in mem access token and user context
         await inMemoryJWT.setToken(response.data.token);
         setUser(response.data.user);
         history.push("/");
@@ -51,6 +53,7 @@ export default function useAuth() {
     try {
       const response = await http.get(`${baseUrl}/logout`);
       if (response.status == 200) {
+        // Delete in mem access token and nullify the user context
         await inMemoryJWT.deleteToken();
         setUser(null);
         history.push("/login");

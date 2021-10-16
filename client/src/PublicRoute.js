@@ -7,6 +7,7 @@ import Loading from "./components/Loading";
 function PublicRoute({ component: Component, ...rest }) {
   const { user, isLoading } = useContext(UserContext);
 
+  // Need this to avoid flashing the homepage page before routing to the login/registration page
   if (isLoading) return <Loading />;
 
   if (!user) {
