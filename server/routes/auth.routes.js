@@ -67,8 +67,8 @@ router.post("/register", async function (req, res) {
       );
 
       // Generate new access and refresh tokens
-      const accessToken = await utils.issueJWT(newUser.rows[0], "2m");
-      const refreshToken = await utils.issueJWT(newUser.rows[0], "10m");
+      const accessToken = await utils.issueJWT(newUser.rows[0]);
+      const refreshToken = await utils.issueJWT(newUser.rows[0]);
 
       // Create httpOnly cookie to store the refresh token
       res.cookie(
@@ -100,6 +100,7 @@ router.get("/refresh_token", async function (req, res) {
 
     const validRefreshToken = await utils.validateJwt(refreshToken);
 
+    // TODO: Test this
     if (!validRefreshToken || Date.now() > validRefreshToken.exp * 1000) {
       res.status(401).json("Token expired");
       return;
@@ -137,12 +138,9 @@ router.get("/logout", async function (req, res) {
 
 const generateRefreshTokenCookieArgs = () => {
   return {
-    domain: "localhost",
-    path: "/",
     httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    expires: new Date(Date.now() + 5 * 60000), // Add 5 minutes
+    secure: false,
+    expires: new Date(Date.now() + 60 * 24 * 60000), // 24 hours
   };
 };
 
