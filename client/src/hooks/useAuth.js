@@ -9,7 +9,7 @@ import inMemoryJWT from "../inMemToken";
 export default function useAuth() {
   let history = useHistory();
   const { setUser } = useContext(UserContext);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState();
 
   const baseUrl = `${env.API_URL}/auth`;
 
@@ -26,9 +26,11 @@ export default function useAuth() {
         await inMemoryJWT.setToken(response.data.token);
         setUser(response.data.user);
         history.push("/");
+      } else {
+        return response;
       }
     } catch (err) {
-      setError(err.response.data);
+      return err.response;
     }
   };
 
@@ -43,9 +45,11 @@ export default function useAuth() {
         await inMemoryJWT.setToken(response.data.token);
         setUser(response.data.user);
         history.push("/");
+      } else {
+        return response;
       }
     } catch (err) {
-      setError(err);
+      return err.response;
     }
   };
 

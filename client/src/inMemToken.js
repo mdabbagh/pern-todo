@@ -7,7 +7,7 @@ const inMemoryJWTManager = () => {
   let inMemoryJWT = null;
   const storageKey = "logout";
 
-  // This listener allows to disconnect another session of the app in another tab on logout
+  // This listener allows us to disconnect another session of the app in another tab on logout
   window.addEventListener("storage", (event) => {
     if (event.key === storageKey) {
       inMemoryJWT = null;

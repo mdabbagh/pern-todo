@@ -4,24 +4,32 @@ const utils = require("../lib/utils");
 
 router.post("/login", async function (req, res) {
   try {
+    const { email, password } = req.body;
+
+    if (email === "" || password === "") {
+      res.status(400).json("Missing email or password.");
+    }
+
     const user = await pool.query('SELECT * FROM "user" WHERE email = $1', [
-      req.body.email,
+      email,
     ]);
 
+    // Check if user is found, if no then return a 401, otherwise continue
     if (user.rowCount == 0) {
-      res.status(401).json({ success: false, msg: "could not find user" });
+      res.status(401).json("Invalid email or password.");
     } else {
+      // Check if password is valid
       const isValid = await utils.validPassword(
-        req.body.password,
+        password,
         user.rows[0].password
       );
-
       if (isValid) {
-        const accessToken = await utils.issueJWT(user.rows[0], "2m");
+        // Generate new access and refresh tokens
+        const accessToken = await utils.issueJWT(user.rows[0]);
+        const refreshToken = await utils.issueJWT(user.rows[0], "1h");
+
         // Remove password field before returning user object
         delete user.rows[0]["password"];
-
-        const refreshToken = await utils.issueJWT(user.rows[0], "10m");
 
         // Create httpOnly cookie to store the refresh token
         res.cookie(
@@ -37,27 +45,34 @@ router.post("/login", async function (req, res) {
           expiresIn: accessToken.expires,
         });
       } else {
-        res
-          .status(401)
-          .json({ success: false, msg: "you entered the wrong password" });
+        res.status(401).json("Invalid email or password.");
       }
     }
   } catch (err) {
     console.log(err);
+    res.status(400).json("Something went wrong.");
   }
 });
 
-// TODO: Handle scenario where insert to user db fails, then don't run saving the refresh token
 router.post("/register", async function (req, res) {
   try {
     const { firstname, lastname, email, password } = req.body;
+
+    // Error handling for email and password
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      res.status(400).json("Invalid email format.");
+    }
+    if (password === "") {
+      res.status(400).json("Password cannot be empty.");
+    }
+
     // Check if user exists, if so, send back error
     const existingUser = await pool.query(
       'SELECT * FROM "user" WHERE email = $1',
       [email]
     );
     if (existingUser.rows.length > 0) {
-      res.status(400).json("User already exists");
+      res.status(400).json("User already exists.");
     } else {
       // If user doesn't exist, create new user
       const hashedPassword = await utils.genPassword(password);
@@ -68,7 +83,7 @@ router.post("/register", async function (req, res) {
 
       // Generate new access and refresh tokens
       const accessToken = await utils.issueJWT(newUser.rows[0]);
-      const refreshToken = await utils.issueJWT(newUser.rows[0]);
+      const refreshToken = await utils.issueJWT(newUser.rows[0], "1h");
 
       // Create httpOnly cookie to store the refresh token
       res.cookie(
@@ -85,8 +100,8 @@ router.post("/register", async function (req, res) {
       });
     }
   } catch (err) {
-    res.status(400).json("Something went wrong");
     console.log(err);
+    res.status(400).json("Something went wrong.");
   }
 });
 
@@ -94,15 +109,14 @@ router.get("/refresh_token", async function (req, res) {
   try {
     const refreshToken = req.cookies["refresh_token"];
     if (!refreshToken) {
-      res.status(401).json("NO REFRESH TOKEN");
+      res.status(401).json("Missing refresh token.");
       return;
     }
 
     const validRefreshToken = await utils.validateJwt(refreshToken);
-
     // TODO: Test this
     if (!validRefreshToken || Date.now() > validRefreshToken.exp * 1000) {
-      res.status(401).json("Token expired");
+      res.status(401).json("Token expired.");
       return;
     }
 
@@ -131,8 +145,8 @@ router.get("/logout", async function (req, res) {
       success: "success",
     });
   } catch (err) {
-    res.status(400).json("Something went wrong");
     console.log(err);
+    res.status(400).json("Something went wrong logging out.");
   }
 });
 

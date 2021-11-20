@@ -14,6 +14,7 @@ import Modal from "@material-ui/core/Modal";
 import { getTodos, deleteTodo } from "../services/todoService";
 import EditTodo from "./EditTodo";
 import InputTodo from "./InputTodo";
+import Error from "./Error";
 
 function getModalStyle() {
   return {
@@ -44,6 +45,7 @@ const ListTodos = () => {
   const [todos, setTodos] = useState([]);
   const [modalStyle] = useState(getModalStyle);
   const [modalState, setModalState] = useState({ open: false, todoId: null });
+  const [error, setError] = useState("");
 
   const handleOpen = (todoId) => () => {
     setModalState({ open: true, todoId: todoId });
@@ -55,10 +57,15 @@ const ListTodos = () => {
 
   const deleteTodoHandler = async (todoId) => {
     try {
-      await deleteTodo(todoId);
-      setTodos(todos.filter((todo) => todo.todo_id !== todoId));
+      const response = await deleteTodo(todoId);
+      if (response.status != 200) {
+        setError(response.data);
+      } else {
+        setTodos(todos.filter((todo) => todo.todo_id !== todoId));
+      }
     } catch (err) {
       console.log(err);
+      setError(err.response.data);
     }
   };
 
@@ -68,7 +75,7 @@ const ListTodos = () => {
         const response = await getTodos();
         setTodos(response.data);
       } catch (err) {
-        console.log(err);
+        setError(err.response.data);
       }
     };
     getAllTodos();
@@ -79,6 +86,9 @@ const ListTodos = () => {
       <Grid container spacing={2}>
         <Grid item xs={12} p={2}>
           <InputTodo />
+        </Grid>
+        <Grid item xs={12}>
+          {error && <Error error={error} />}
         </Grid>
         <Grid item xs={12}>
           <TableContainer component={Paper} className={classes.tableContainer}>

@@ -14,9 +14,10 @@ router.get(
         [id]
       );
 
-      res.json(user.rows[0]);
+      res.status(200).json(user.rows[0]);
     } catch (err) {
       console.log(err);
+      res.status(400).json(err.response.data);
     }
   }
 );
@@ -32,11 +33,19 @@ router.put(
       // Check if the ids match, if not, return a 401 unauthorized
       if (userId == id) {
         const { firstname, lastname, password } = req.body;
-        const hashedPassword = await utils.genPassword(password);
-        const updatedUser = await pool.query(
-          'UPDATE "user" SET firstname = $1, lastname = $2, password = $3 WHERE user_id = $4 RETURNING user_id, firstname, lastname, email',
-          [firstname, lastname, hashedPassword, userId]
-        );
+        let updatedUser = null;
+        if (password != undefined) {
+          const hashedPassword = await utils.genPassword(password);
+          updatedUser = await pool.query(
+            'UPDATE "user" SET firstname = $1, lastname = $2, password = $3 WHERE user_id = $4 RETURNING user_id, firstname, lastname, email',
+            [firstname, lastname, hashedPassword, userId]
+          );
+        } else {
+          updatedUser = await pool.query(
+            'UPDATE "user" SET firstname = $1, lastname = $2 WHERE user_id = $3 RETURNING user_id, firstname, lastname, email',
+            [firstname, lastname, userId]
+          );
+        }
 
         res.status(200).json(updatedUser.rows[0]);
       } else {
@@ -44,6 +53,7 @@ router.put(
       }
     } catch (err) {
       console.log(err);
+      res.status(400).json("Something went wrong updating user.");
     }
   }
 );

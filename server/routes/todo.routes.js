@@ -10,14 +10,20 @@ router.post(
     try {
       const userId = req.user.rows[0].user_id;
       const { description } = req.body;
+
+      if (description === "") {
+        res.status(400).json("Description cannot be empty.");
+      }
+
       const newTodo = await pool.query(
         "INSERT INTO todo (user_id, description) VALUES($1, $2) RETURNING *",
         [userId, description]
       );
 
-      res.json(newTodo.rows[0]);
+      res.status(200).json(newTodo.rows[0]);
     } catch (err) {
       console.log(err);
+      res.status(400).json("Something went wrong adding a new todo.");
     }
   }
 );
@@ -34,9 +40,10 @@ router.get(
         [userId]
       );
 
-      res.json(allTodos.rows);
+      res.status(200).json(allTodos.rows);
     } catch (err) {
       console.log(err);
+      res.status(400).json("Something went wrong getting all todos.");
     }
   }
 );
@@ -54,9 +61,10 @@ router.get(
         [id, userId]
       );
 
-      res.json(todo.rows[0]);
+      res.status(200).json(todo.rows[0]);
     } catch (err) {
       console.log(err);
+      res.status(400).json("Something went wrong getting todo.");
     }
   }
 );
@@ -70,14 +78,20 @@ router.put(
       const userId = req.user.rows[0].user_id;
       const { id } = req.params;
       const { description } = req.body;
+
+      if (description === "") {
+        res.status(400).json("Description can't be empty.");
+      }
+
       const updatedTodo = await pool.query(
         "UPDATE todo SET description = $1 WHERE todo_id = $2 AND user_id = $3 RETURNING *",
         [description, id, userId]
       );
 
-      res.json(updatedTodo.rows[0]);
+      res.status(200).json(updatedTodo.rows[0]);
     } catch (err) {
       console.log(err);
+      res.status(400).json("Something went wrong updating todo.");
     }
   }
 );
@@ -90,14 +104,16 @@ router.delete(
     try {
       const userId = req.user.rows[0].user_id;
       const { id } = req.params;
+
       const deletedTodo = await pool.query(
         "DELETE FROM todo WHERE todo_id = $1 AND user_id = $2 RETURNING *",
         [id, userId]
       );
 
-      res.json(deletedTodo.rows[0]);
+      res.status(200).json(deletedTodo.rows[0]);
     } catch (err) {
       console.log(err);
+      res.status(400).json("Something went wrong deleting todo.");
     }
   }
 );
