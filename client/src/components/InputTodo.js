@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { TextField, Button, Grid } from "@material-ui/core";
+import { TextField, Button, Grid } from "@mui/material";
 
 import { createTodo } from "../services/todoService";
 import Error from "./Error";
@@ -24,7 +24,7 @@ const InputTodo = () => {
 
   return (
     <Fragment>
-      <Grid container justifyContent="center" spacing={1}>
+      <Grid container justifyContent="center" spacing={0}>
         <Grid item xs={12}>
           <h1>Add Todo</h1>
         </Grid>

@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { TextField, Button, Grid } from "@material-ui/core";
+import { TextField, Button, Grid } from "@mui/material";
 import PropTypes from "prop-types";
 
 import { updateTodo } from "../services/todoService";
@@ -26,9 +26,9 @@ const EditTodo = ({ todo, handleClose }) => {
 
   return (
     <Fragment>
-      <Grid container spacing={1}>
+      <Grid container spacing={0}>
         <Grid item xs={12}>
-          <h2>Edit Todo</h2>
+          <h3>Edit Todo</h3>
         </Grid>
         <Grid item xs={12}>
           {error && <Error error={error} />}
@@ -40,7 +40,6 @@ const EditTodo = ({ todo, handleClose }) => {
                 <TextField
                   required
                   id="description"
-                  style={{ marginBottom: 8 }}
                   label="Enter description"
                   variant="outlined"
                   autoComplete="off"
@@ -61,8 +60,8 @@ const EditTodo = ({ todo, handleClose }) => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <Button
-                  variant="contained"
-                  color="secondary"
+                  variant="outlined"
+                  color="primary"
                   fullWidth
                   onClick={handleClose}
                 >

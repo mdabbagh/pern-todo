@@ -1,15 +1,15 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button } from "@material-ui/core";
-import { Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Modal from "@material-ui/core/Modal";
+import { Button } from "@mui/material";
+import { Grid } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Modal from "@mui/material/Modal";
 
 import { getTodos, deleteTodo } from "../services/todoService";
 import EditTodo from "./EditTodo";
@@ -21,27 +21,28 @@ function getModalStyle() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
+    padding: 10,
   };
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
   tableContainer: {
-    marginTop: 10,
+    marginTop: 5,
   },
   paper: {
     position: "absolute",
-    backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    backgroundColor: "white",
+    padding: (10, 10, 10, 10),
   },
-}));
+});
 
 const ListTodos = () => {
   const classes = useStyles();
+
   const [todos, setTodos] = useState([]);
   const [modalStyle] = useState(getModalStyle);
   const [modalState, setModalState] = useState({ open: false, todoId: null });
@@ -83,8 +84,8 @@ const ListTodos = () => {
 
   return (
     <Fragment>
-      <Grid container spacing={2}>
-        <Grid item xs={12} p={2}>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
           <InputTodo />
         </Grid>
         <Grid item xs={12}>
@@ -92,7 +93,7 @@ const ListTodos = () => {
         </Grid>
         <Grid item xs={12}>
           <TableContainer component={Paper} className={classes.tableContainer}>
-            <Table className={classes.table} aria-label="simple table">
+            <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell style={{ fontWeight: "bold" }}>
@@ -114,7 +115,7 @@ const ListTodos = () => {
                         color="primary"
                         onClick={handleOpen(todo.todo_id)}
                       >
-                        Edit Todo
+                        Edit
                       </Button>
                     </TableCell>
                     <TableCell component="th" scope="row">

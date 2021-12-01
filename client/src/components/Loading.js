@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Grid, CircularProgress } from "@material-ui/core";
+import { Grid, CircularProgress } from "@mui/material";
 
 const Loading = () => {
   return (

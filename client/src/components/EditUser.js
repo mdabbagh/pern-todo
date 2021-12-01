@@ -1,13 +1,13 @@
-import React, { Fragment, useState, useContext } from "react";
-import { TextField, Button, Grid } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import React, { Fragment, useState, useContext, useEffect } from "react";
+import { TextField, Button, Grid, Alert } from "@mui/material";
+//import { useHistory } from "react-router-dom";
 
 import { UserContext } from "../UserContext";
 import { updateUser } from "../services/userService";
 import Error from "./Error";
 
 const EditUser = () => {
-  const history = useHistory();
+  //const history = useHistory();
   const { user, setUser } = useContext(UserContext);
 
   const [firstname, setFirstname] = useState(user.firstname);
@@ -15,6 +15,16 @@ const EditUser = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [alert, setAlert] = useState(false);
+
+  useEffect(() => {
+    // when the component is mounted, the alert is displayed for 3 seconds
+    if (alert) {
+      setTimeout(() => {
+        setAlert(false);
+      }, 5000);
+    }
+  }, [alert]);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
@@ -35,11 +45,12 @@ const EditUser = () => {
       const userId = user.user_id;
       const updatedUser = await updateUser(body, userId);
       setUser(updatedUser.data);
+      setAlert(true);
 
       // Clear password and confirm password fields
       setPassword("");
       setConfirmPassword("");
-      history.push("/user");
+      //history.push("/user");
     } catch (err) {
       console.log(err);
       setError("Something went wrong updating user.");
@@ -48,7 +59,10 @@ const EditUser = () => {
 
   return (
     <Fragment>
-      <Grid container justifyContent="center" spacing={2}>
+      <Grid container justifyContent="center" spacing={1}>
+        <Grid item xs={12}>
+          {alert && <Alert severity="success">Successfully updated.</Alert>}
+        </Grid>
         <Grid item xs={12}>
           <h1>Update Name</h1>
         </Grid>

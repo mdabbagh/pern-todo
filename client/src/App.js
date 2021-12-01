@@ -1,7 +1,6 @@
 import "./App.css";
 import React from "react";
-import { Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Grid } from "@mui/material";
 import { BrowserRouter as Router, Switch } from "react-router-dom";
 
 import { UserContext } from "./UserContext";
@@ -14,20 +13,7 @@ import PublicRoute from "./PublicRoute";
 import Navbar from "./components/Navbar";
 import useFindUser from "./hooks/useFindUser";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    padding: 10,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-}));
-
 function App() {
-  const classes = useStyles();
   // Check if current user exists by trying to refresh token with the current access token
   const { user, setUser, isLoading } = useFindUser();
 
@@ -35,24 +21,22 @@ function App() {
     <Router>
       <UserContext.Provider value={{ user, setUser, isLoading }}>
         {user && <Navbar />}
-        <div className={classes.root}>
-          <Grid container>
-            <Switch>
-              <PrivateRoute
-                exact
-                path="/user"
-                component={EditUser}
-              ></PrivateRoute>
-              <PrivateRoute exact path="/" component={ListTodos}></PrivateRoute>
-              <PublicRoute
-                exact
-                path="/register"
-                component={Register}
-              ></PublicRoute>
-              <PublicRoute exact path="/login" component={Login}></PublicRoute>
-            </Switch>
-          </Grid>
-        </div>
+        <Grid container style={{ padding: "10px" }}>
+          <Switch>
+            <PrivateRoute
+              exact
+              path="/user"
+              component={EditUser}
+            ></PrivateRoute>
+            <PrivateRoute exact path="/" component={ListTodos}></PrivateRoute>
+            <PublicRoute
+              exact
+              path="/register"
+              component={Register}
+            ></PublicRoute>
+            <PublicRoute exact path="/login" component={Login}></PublicRoute>
+          </Switch>
+        </Grid>
       </UserContext.Provider>
     </Router>
   );
