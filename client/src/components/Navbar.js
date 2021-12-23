@@ -34,7 +34,7 @@ const Navbar = () => {
   return (
     <Fragment>
       <AppBar position="static">
-        <Container maxWidth="xl" sx={{ mr: 0, pr: 0 }}>
+        <Container sx={{ margin: (0, 0, 0, 0), padding: (0, 0, 0, 0) }}>
           <Toolbar>
             <Typography
               variant="h6"

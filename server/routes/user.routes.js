@@ -1,18 +1,20 @@
-const router = require("express").Router();
-const pool = require("../config/db");
-const passport = require("passport");
-const utils = require("../lib/utils");
+import express from "express";
+import passport from "passport";
+import { genPassword } from "../lib/utils.js";
+import {
+  getUserById,
+  updateUserNameAndPassword,
+  updateUserName,
+} from "../models/user.model.js";
+var userRouter = express.Router();
 
-router.get(
+userRouter.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const { id } = req.params;
-      const user = await pool.query(
-        'SELECT user_id, firstname, lastname, email FROM "user" WHERE user_id = $1',
-        [id]
-      );
+      const user = await getUserById(id);
 
       res.status(200).json(user.rows[0]);
     } catch (err) {
@@ -23,7 +25,7 @@ router.get(
 );
 
 // Edit a user
-router.put(
+userRouter.put(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -34,17 +36,17 @@ router.put(
       if (userId == id) {
         const { firstname, lastname, password } = req.body;
         let updatedUser = null;
+        // If we have a password in the body, then update the password field
         if (password != undefined) {
-          const hashedPassword = await utils.genPassword(password);
-          updatedUser = await pool.query(
-            'UPDATE "user" SET firstname = $1, lastname = $2, password = $3 WHERE user_id = $4 RETURNING user_id, firstname, lastname, email',
-            [firstname, lastname, hashedPassword, userId]
+          const hashedPassword = await genPassword(password);
+          updatedUser = await updateUserNameAndPassword(
+            firstname,
+            lastname,
+            hashedPassword,
+            userId
           );
         } else {
-          updatedUser = await pool.query(
-            'UPDATE "user" SET firstname = $1, lastname = $2 WHERE user_id = $3 RETURNING user_id, firstname, lastname, email',
-            [firstname, lastname, userId]
-          );
+          updatedUser = await updateUserName(firstname, lastname, userId);
         }
 
         res.status(200).json(updatedUser.rows[0]);
@@ -58,4 +60,4 @@ router.put(
   }
 );
 
-module.exports = router;
+export default userRouter;

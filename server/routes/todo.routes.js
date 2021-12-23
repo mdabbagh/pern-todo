@@ -1,9 +1,16 @@
-const router = require("express").Router();
-const pool = require("../config/db");
-const passport = require("passport");
+import express from "express";
+import passport from "passport";
+import {
+  createTodo,
+  getTodos,
+  getTodo,
+  updateTodo,
+  deleteTodo,
+} from "../models/todo.model.js";
+var todoRouter = express.Router();
 
 // Create todo
-router.post(
+todoRouter.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -13,12 +20,15 @@ router.post(
 
       if (description === "") {
         res.status(400).json("Description cannot be empty.");
+        return;
       }
 
-      const newTodo = await pool.query(
-        "INSERT INTO todo (user_id, description) VALUES($1, $2) RETURNING *",
-        [userId, description]
-      );
+      if (!userId) {
+        res.status(400).json("User must be specified.");
+        return;
+      }
+
+      const newTodo = await createTodo(userId, description);
 
       res.status(200).json(newTodo.rows[0]);
     } catch (err) {
@@ -29,16 +39,13 @@ router.post(
 );
 
 // Get all todos
-router.get(
+todoRouter.get(
   "/",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const userId = req.user.rows[0].user_id;
-      const allTodos = await pool.query(
-        "SELECT * FROM todo WHERE user_id = $1",
-        [userId]
-      );
+      const allTodos = await getTodos(userId);
 
       res.status(200).json(allTodos.rows);
     } catch (err) {
@@ -49,17 +56,14 @@ router.get(
 );
 
 // Get a todo
-router.get(
+todoRouter.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const userId = req.user.rows[0].user_id;
       const { id } = req.params;
-      const todo = await pool.query(
-        "SELECT * FROM todo WHERE todo_id = $1 AND user_id = $2",
-        [id, userId]
-      );
+      const todo = await getTodo(id, userId);
 
       res.status(200).json(todo.rows[0]);
     } catch (err) {
@@ -70,7 +74,7 @@ router.get(
 );
 
 // Update a todo
-router.put(
+todoRouter.put(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -83,10 +87,7 @@ router.put(
         res.status(400).json("Description can't be empty.");
       }
 
-      const updatedTodo = await pool.query(
-        "UPDATE todo SET description = $1 WHERE todo_id = $2 AND user_id = $3 RETURNING *",
-        [description, id, userId]
-      );
+      const updatedTodo = await updateTodo(description, id, userId);
 
       res.status(200).json(updatedTodo.rows[0]);
     } catch (err) {
@@ -97,7 +98,7 @@ router.put(
 );
 
 // Delete a todo
-router.delete(
+todoRouter.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -105,10 +106,7 @@ router.delete(
       const userId = req.user.rows[0].user_id;
       const { id } = req.params;
 
-      const deletedTodo = await pool.query(
-        "DELETE FROM todo WHERE todo_id = $1 AND user_id = $2 RETURNING *",
-        [id, userId]
-      );
+      const deletedTodo = await deleteTodo(id, userId);
 
       res.status(200).json(deletedTodo.rows[0]);
     } catch (err) {
@@ -118,4 +116,4 @@ router.delete(
   }
 );
 
-module.exports = router;
+export default todoRouter;

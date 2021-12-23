@@ -1,6 +1,8 @@
-const JwtStrategy = require("passport-jwt").Strategy;
-const ExtractJwt = require("passport-jwt").ExtractJwt;
-const pool = require("./db");
+import { Strategy as JwtStrategy } from "passport-jwt";
+import { ExtractJwt } from "passport-jwt";
+import pool from "./db.js";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 require("dotenv").config();
 
 // The verifying secret
@@ -14,7 +16,7 @@ const options = {
 };
 
 // app.js will pass the global passport object here, and this function will configure it
-module.exports = (passport) => {
+export default (passport) => {
   // The JWT payload is passed into the verify callback
   passport.use(
     new JwtStrategy(options, function (jwt_payload, done) {

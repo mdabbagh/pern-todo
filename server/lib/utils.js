@@ -1,22 +1,24 @@
-const bcrypt = require("bcrypt");
+import { compare, hash } from "bcrypt";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const jsonwebtoken = require("jsonwebtoken");
 require("dotenv").config();
 
 async function validPassword(password, savedPassword) {
-  const isMatch = await bcrypt.compare(password, savedPassword);
+  const isMatch = await compare(password, savedPassword);
   return isMatch;
 }
 
 async function genPassword(password) {
   try {
-    const hashedPass = await bcrypt.hash(password, 10);
+    const hashedPass = await hash(password, 10);
     return hashedPass;
   } catch (error) {
     console.log(error);
   }
 }
 
-async function issueJWT(user, expiresIn = "15m") {
+async function issueJWT(user, expiresIn = "5m") {
   const userId = user.user_id;
 
   const payload = {
@@ -54,8 +56,13 @@ async function decodeToken(jwt) {
   }
 }
 
-module.exports.validPassword = validPassword;
-module.exports.genPassword = genPassword;
-module.exports.issueJWT = issueJWT;
-module.exports.validateJwt = validateJwt;
-module.exports.decodeToken = decodeToken;
+const _validPassword = validPassword;
+export { _validPassword as validPassword };
+const _genPassword = genPassword;
+export { _genPassword as genPassword };
+const _issueJWT = issueJWT;
+export { _issueJWT as issueJWT };
+const _validateJwt = validateJwt;
+export { _validateJwt as validateJwt };
+const _decodeToken = decodeToken;
+export { _decodeToken as decodeToken };

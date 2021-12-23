@@ -1,3 +1,5 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const Pool = require("pg").Pool;
 require("dotenv").config();
 
@@ -8,4 +10,4 @@ const pool = new Pool({
   database: process.env.DB_NAME,
 });
 
-module.exports = pool;
+export default pool;

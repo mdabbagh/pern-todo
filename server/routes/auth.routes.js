@@ -1,8 +1,15 @@
-const pool = require("../config/db");
-const router = require("express").Router();
-const utils = require("../lib/utils");
+import express from "express";
+import {
+  validPassword,
+  issueJWT,
+  genPassword,
+  validateJwt,
+} from "../lib/utils.js";
+import * as userModel from "../models/user.model.js";
 
-router.post("/login", async function (req, res) {
+var authRouter = express.Router();
+
+async function loginHandler(req, res) {
   try {
     const { email, password } = req.body;
 
@@ -10,23 +17,18 @@ router.post("/login", async function (req, res) {
       res.status(400).json("Missing email or password.");
     }
 
-    const user = await pool.query('SELECT * FROM "user" WHERE email = $1', [
-      email,
-    ]);
+    const user = await userModel.getUserByEmail(email);
 
     // Check if user is found, if no then return a 401, otherwise continue
     if (user.rowCount == 0) {
       res.status(401).json("Invalid email or password.");
     } else {
       // Check if password is valid
-      const isValid = await utils.validPassword(
-        password,
-        user.rows[0].password
-      );
+      const isValid = await validPassword(password, user.rows[0].password);
       if (isValid) {
         // Generate new access and refresh tokens
-        const accessToken = await utils.issueJWT(user.rows[0]);
-        const refreshToken = await utils.issueJWT(user.rows[0], "1h");
+        const accessToken = await issueJWT(user.rows[0]);
+        const refreshToken = await issueJWT(user.rows[0], "1h");
 
         // Remove password field before returning user object
         delete user.rows[0]["password"];
@@ -52,38 +54,42 @@ router.post("/login", async function (req, res) {
     console.log(err);
     res.status(400).json("Something went wrong.");
   }
-});
+}
 
-router.post("/register", async function (req, res) {
+authRouter.post("/login", loginHandler);
+
+async function registerHandler(req, res) {
   try {
     const { firstname, lastname, email, password } = req.body;
+
+    if (password === "" || email === "") {
+      res.status(400).json("Password or email cannot be empty.");
+      return;
+    }
 
     // Error handling for email and password
     if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
       res.status(400).json("Invalid email format.");
-    }
-    if (password === "") {
-      res.status(400).json("Password cannot be empty.");
+      return;
     }
 
     // Check if user exists, if so, send back error
-    const existingUser = await pool.query(
-      'SELECT * FROM "user" WHERE email = $1',
-      [email]
-    );
+    const existingUser = await userModel.getUserByEmail(email);
     if (existingUser.rows.length > 0) {
       res.status(400).json("User already exists.");
     } else {
       // If user doesn't exist, create new user
-      const hashedPassword = await utils.genPassword(password);
-      const newUser = await pool.query(
-        'INSERT INTO "user" (firstname, lastname, email, password) VALUES($1, $2, $3, $4) RETURNING user_id, firstname, lastname, email',
-        [firstname, lastname, email, hashedPassword]
+      const hashedPassword = await genPassword(password);
+      const newUser = await userModel.createUser(
+        firstname,
+        lastname,
+        email,
+        hashedPassword
       );
 
       // Generate new access and refresh tokens
-      const accessToken = await utils.issueJWT(newUser.rows[0]);
-      const refreshToken = await utils.issueJWT(newUser.rows[0], "1h");
+      const accessToken = await issueJWT(newUser.rows[0]);
+      const refreshToken = await issueJWT(newUser.rows[0], "1h");
 
       // Create httpOnly cookie to store the refresh token
       res.cookie(
@@ -103,9 +109,11 @@ router.post("/register", async function (req, res) {
     console.log(err);
     res.status(400).json("Something went wrong.");
   }
-});
+}
 
-router.get("/refresh_token", async function (req, res) {
+authRouter.post("/register", registerHandler);
+
+async function refreshTokenHandler(req, res) {
   try {
     const refreshToken = req.cookies["refresh_token"];
     if (!refreshToken) {
@@ -113,19 +121,16 @@ router.get("/refresh_token", async function (req, res) {
       return;
     }
 
-    const validRefreshToken = await utils.validateJwt(refreshToken);
+    const validRefreshToken = await validateJwt(refreshToken);
     // TODO: Test this
     if (!validRefreshToken || Date.now() > validRefreshToken.exp * 1000) {
       res.status(401).json("Token expired.");
       return;
     }
 
-    const existingUser = await pool.query(
-      'SELECT user_id, firstname, lastname, email FROM "user" WHERE user_id = $1',
-      [validRefreshToken.sub]
-    );
+    const existingUser = await userModel.getUserById(validRefreshToken.sub);
 
-    const accessToken = await utils.issueJWT(existingUser.rows[0]);
+    const accessToken = await issueJWT(existingUser.rows[0]);
     res.status(200).json({
       success: true,
       token: accessToken.token,
@@ -135,9 +140,11 @@ router.get("/refresh_token", async function (req, res) {
     console.log(err);
     res.status(400).json("Unauthorized");
   }
-});
+}
 
-router.get("/logout", async function (req, res) {
+authRouter.get("/refresh_token", refreshTokenHandler);
+
+async function logoutHandler(_, res) {
   try {
     res.clearCookie("refresh_token");
     // Send response with access token in the body
@@ -148,7 +155,9 @@ router.get("/logout", async function (req, res) {
     console.log(err);
     res.status(400).json("Something went wrong logging out.");
   }
-});
+}
+
+authRouter.get("/logout", logoutHandler);
 
 const generateRefreshTokenCookieArgs = () => {
   return {
@@ -158,4 +167,4 @@ const generateRefreshTokenCookieArgs = () => {
   };
 };
 
-module.exports = router;
+export default authRouter;
