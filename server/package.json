@@ -4,9 +4,13 @@
   "description": "",
   "main": "server.js",
   "type": "module",
+  "jest": {
+    "testEnvironment": "jest-environment-node",
+    "transform": {}
+  },
   "scripts": {
     "start": "nodemon server.js",
-    "test": "node ../node_modules/.bin/jest --detectOpenHandles"
+    "test": "../node_modules/.bin/cross-env NODE_OPTIONS=--experimental-vm-modules ../node_modules/.bin/jest --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",

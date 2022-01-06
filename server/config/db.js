@@ -10,4 +10,8 @@ const pool = new Pool({
   database: process.env.DB_NAME,
 });
 
+pool.on("error", (err, client) => {
+  console.error("DB Error: ", err);
+});
+
 export default pool;
