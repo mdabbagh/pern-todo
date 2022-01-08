@@ -28,21 +28,3 @@ In the top level directory:
 npm install
 npm run start
 ```
-
-## Running the app
-
-Run the server:
-
-```bash
-cd server
-npm start
-```
-
-The server is now running on localhost:5000.
-
-Run the client:
-
-```bash
-cd client
-npm start
-```
