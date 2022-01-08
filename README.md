@@ -1,13 +1,12 @@
 # pern-todo
 
-Postgres + Express + React + Node
+This is a simple todo application using React + Postgres + Express + Node.
 
-## 1-Time Setup
+It was developed as a practice app for learning web development with these technologies. The repository has multiple branches, with each one introducing more features and complexity.
 
-- Install Postgres - Used MacOS EDB Installer
-- Setup Postgres DB
+You can use this app as a sample app for any learning you may be interested in. For example, Quality Engineers can use this to run a simple app locally and practice various automated testing technologies against it.
 
-Create a database called "perntodo" then run the commands in /server/database.sql. Or with psql:
+## One-Time Setup
 
 - [Install Postgres](https://www.postgresql.org/download/) - Used MacOS EDB Installer
 - Setup the Postgres database - Run commands in /server/database.sql
@@ -18,13 +17,16 @@ Create a database called "perntodo" then run the commands in /server/database.sq
 - Install nodemon globally
 
 ```bash
-npm i nodemon -g
+npm install nodemon -g
 ```
 
 ## Development
 
+In the top level directory:
+
 ```bash
 npm install
+npm run start
 ```
 
 ## Running the app
