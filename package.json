@@ -8,14 +8,19 @@
     "prettier": "^2.3.2"
   },
   "devDependencies": {
+    "concurrently": "^7.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0"
   },
   "scripts": {
+    "start-server": "cd server && npm run start",
+    "start-client": "cd client && npm run start",
+    "start": "concurrently \"npm run start-server\" \"npm run start-client\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "npx prettier --write .",
     "format-check": "npx prettier --check",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "postinstall": "(cd client && npm install); (cd server && npm install)"
   },
   "repository": {
     "type": "git",
