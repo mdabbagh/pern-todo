@@ -1,18 +1,32 @@
 import request from "supertest";
 import makeApp from "../app.js";
 import { jest } from "@jest/globals";
+import userModel from "../models/user.model.js";
+import * as authRoutes from "../routes/auth.routes.js";
 
-const createUser = jest.fn();
-const getUserByEmail = jest.fn();
-const userModel = jest.fn();
-const app = makeApp({ userModel });
+const query = jest.fn();
+/*const mockedVal = {
+  command: "INSERT",
+  rowCount: 1,
+  oid: 0,
+  rows: [
+    {
+      user_id: 3,
+      firstname: "test first",
+      lastname: "test last",
+      email: "testfirst1@testlast.com",
+    },
+  ],
+};
+const localUserModel = jest
+  .spyOn(genUserModel, "createUser")
+  .mockReturnValue(mockedVal);
+const app = makeApp({ getUserByEmail, query, createUser, localUserModel });*/
+
+const app = makeApp({ query });
 
 describe("Test auth routes", function () {
-  beforeEach(() => {
-    createUser.mockReset();
-    getUserByEmail.mockReset();
-    userModel.mockReset();
-  });
+  beforeEach(() => {});
 
   test("unsuccessful register with invalid email", async () => {
     const req = {
@@ -57,7 +71,13 @@ describe("Test auth routes", function () {
       email: "test@test.com",
       password: "asdfasdf",
     };
-    userModel.getUserByEmail.mockResolvedValue();
+    //query.mockResolvedValue({ rows: [] });
+    jest.mock("../models/user.model.js", () => ({
+      getUserByEmail: () =>
+        Promise.resolve({
+          rows: [{}],
+        }),
+    }));
     const res = await request(app).post("/auth/register").send(req);
     expect(res.status).toBe(400);
     expect(res.body).toContain("BLAH");
